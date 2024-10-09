@@ -3,27 +3,27 @@ package ADTMatrix;
 public class Operation 
 {
 
-    public boolean isSquareMatrix(Matrix matrix)
+    public boolean isSquareMatrix(Matrix M)
     {
-        return matrix.rowEff == matrix.colEff;
+        return M.rowEff == M.colEff;
     }
 
-    public boolean isIdentityMatrix(Matrix matrix)
+    public boolean isIdentityMatrix(Matrix M)
     {
-        if (!isSquareMatrix(matrix))
+        if (!isSquareMatrix(M))
         {
             return false;
         }
 
-        for (int i = 0; i < matrix.rowEff; i++)
+        for (int i = 0; i < M.rowEff; i++)
         {
-            for (int j = 0; j < matrix.colEff; j++)
+            for (int j = 0; j < M.colEff; j++)
             {
-                if (i == j && matrix.matrix[i][j] != 1)
+                if (i == j && M.matrix[i][j] != 1)
                 {
                     return false;
                 }
-                else if (i != j && matrix.matrix[i][j] != 0)
+                else if (i != j && M.matrix[i][j] != 0)
                 {
                     return false;
                 }
@@ -32,9 +32,9 @@ public class Operation
         return true;
     }
 
-    public boolean isMatrixEqual(Matrix m1, Matrix m2)
+    public boolean isMatrixEqual(Matrix M1, Matrix M2)
     {
-        return (m1.rowEff == m2.rowEff && m1.colEff == m2.colEff);
+        return (M1.rowEff == M2.rowEff && M1.colEff == M2.colEff);
     }
 
     public Matrix createIdentityMatrix(int size)
@@ -48,78 +48,78 @@ public class Operation
         return result;
     }
 
-    public Matrix multiplyMatrix(Matrix m1, Matrix m2)
+    public Matrix multiplyMatrix(Matrix M1, Matrix M2)
     {
-        Matrix result = new Matrix(m1.rowEff, m2.colEff);
+        Matrix result = new Matrix(M1.rowEff, M2.colEff);
 
-        for (int i = 0; i < m1.rowEff; i++)
+        for (int i = 0; i < M1.rowEff; i++)
         {
-            for (int j = 0; j < m2.colEff; j++)
+            for (int j = 0; j < M2.colEff; j++)
             {
-                for (int k = 0; k < m1.colEff; k++)
+                for (int k = 0; k < M1.colEff; k++)
                 {
-                    result.matrix[i][j] += m1.matrix[i][k] * m2.matrix[k][j];
+                    result.matrix[i][j] += M1.matrix[i][k] * M2.matrix[k][j];
                 }
             }
         }
         return result;
     }
 
-    public Matrix transposeMatrix(Matrix matrix)
+    public Matrix transposeMatrix(Matrix M)
     {
-        Matrix result = new Matrix(matrix.colEff, matrix.rowEff);
+        Matrix result = new Matrix(M.colEff, M.rowEff);
 
-        for (int i = 0; i < matrix.rowEff; i++)
+        for (int i = 0; i < M.rowEff; i++)
         {
-            for (int j = 0; j < matrix.colEff; j++)
+            for (int j = 0; j < M.colEff; j++)
             {
-                result.matrix[j][i] = matrix.matrix[i][j];
+                result.matrix[j][i] = M.matrix[i][j];
             }
         }
         return result;
     }
 
-    public Matrix expandCol(Matrix m1, Matrix m2)
+    public Matrix expandCol(Matrix M1, Matrix M2)
     {
-        Matrix result = new Matrix(m1.rowEff, m1.colEff + m2.colEff);
+        Matrix result = new Matrix(M1.rowEff, M1.colEff + M2.colEff);
 
-        for (int i = 0; i < m1.rowEff; i++)
+        for (int i = 0; i < M1.rowEff; i++)
         {
             for (int j = 0; j < result.colEff; j++)
             {
-                if (j < m1.colEff)
+                if (j < M1.colEff)
                 {
-                    result.matrix[i][j] = m1.matrix[i][j];
+                    result.matrix[i][j] = M1.matrix[i][j];
                 }
                 else
                 {
-                    result.matrix[i][m1.colEff + j] = m2.matrix[i][j];
+                    result.matrix[i][M1.colEff + j] = M2.matrix[i][j];
                 }
             }
         }
         return result;
     }
 
-    public Matrix getMinor(Matrix matrix, int delRow, int delCol)
+    public Matrix getMinor(Matrix M, int delRow, int delCol)
     {
-        Matrix result = new Matrix(matrix.rowEff - 1, matrix.colEff - 1);
+        Matrix result = new Matrix(M.rowEff - 1, M.colEff - 1);
         int row = 0, col = 0;
 
-        for (int i = 0; i < matrix.rowEff; i++)
+        for (int i = 0; i < M.rowEff; i++)
         {
             if (i == delRow)
             {
                 continue;
             }
 
-            for (int j = 0; j < matrix.colEff; j++)
+            for (int j = 0; j < M.colEff; j++)
             {
                 if (j == delCol)
                 {
                     continue;
                 }
 
-                result.matrix[row][col] = matrix.matrix[i][j];
+                result.matrix[row][col] = M.matrix[i][j];
                 col++;
             }
             row++;
@@ -128,51 +128,51 @@ public class Operation
         return result;
     }
 
-    public Matrix takeLastRow(Matrix matrix)
+    public Matrix takeLastRow(Matrix M)
     {
-        Matrix result = new Matrix(1, matrix.colEff);
+        Matrix result = new Matrix(1, M.colEff);
 
-        for (int i = 0; i < matrix.colEff; i++)
+        for (int i = 0; i < M.colEff; i++)
         {
-            result.matrix[0][i] = matrix.matrix[matrix.rowEff - 1][i];
+            result.matrix[0][i] = M.matrix[M.rowEff - 1][i];
         }
         return result;
     }
 
-    public Matrix takeLastCol(Matrix matrix)
+    public Matrix takeLastCol(Matrix M)
     {
-        Matrix result = new Matrix(matrix.rowEff, 1);
+        Matrix result = new Matrix(M.rowEff, 1);
 
-        for (int i = 0; i < matrix.rowEff; i++)
+        for (int i = 0; i < M.rowEff; i++)
         {
-            result.matrix[i][0] = matrix.matrix[i][matrix.colEff - 1];
+            result.matrix[i][0] = M.matrix[i][M.colEff - 1];
         }
         return result;
     }
     
-    public Matrix dropLastRow(Matrix matrix)
+    public Matrix dropLastRow(Matrix M)
     {
-        Matrix result = new Matrix(matrix.rowEff - 1, matrix.colEff);
+        Matrix result = new Matrix(M.rowEff - 1, M.colEff);
 
-        for (int i = 0; i < matrix.rowEff - 1; i++)
+        for (int i = 0; i < M.rowEff - 1; i++)
         {
-            for (int j = 0; j < matrix.colEff; j++)
+            for (int j = 0; j < M.colEff; j++)
             {
-                result.matrix[i][j] = matrix.matrix[i][j];
+                result.matrix[i][j] = M.matrix[i][j];
             }
         }
         return result;
     }
 
-    public Matrix dropLastCol(Matrix matrix)
+    public Matrix dropLastCol(Matrix M)
     {
-        Matrix result = new Matrix(matrix.rowEff, matrix.colEff - 1);
+        Matrix result = new Matrix(M.rowEff, M.colEff - 1);
 
-        for (int i = 0; i < matrix.rowEff; i++)
+        for (int i = 0; i < M.rowEff; i++)
         {
-            for (int j = 0; j < matrix.colEff - 1; j++)
+            for (int j = 0; j < M.colEff - 1; j++)
             {
-                result.matrix[i][j] = matrix.matrix[i][j];
+                result.matrix[i][j] = M.matrix[i][j];
             }
         }
         return result;
