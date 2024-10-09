@@ -1,15 +1,18 @@
 package ADTMatrix;
 
+/* Definisi Kelas Operation */
 public class Operation 
 {
 
     public boolean isSquareMatrix(Matrix M)
     {
+        // Mengembalikan true jika matriks M adalah matriks persegi
         return M.rowEff == M.colEff;
     }
 
     public boolean isIdentityMatrix(Matrix M)
     {
+        // Mengembalikan true jika matriks M adalah matriks identitas
         if (!isSquareMatrix(M))
         {
             return false;
@@ -34,22 +37,34 @@ public class Operation
 
     public boolean isMatrixEqual(Matrix M1, Matrix M2)
     {
+        // Mengembalikan true jika kedua dimensi matriks sama
         return (M1.rowEff == M2.rowEff && M1.colEff == M2.colEff);
     }
 
-    public Matrix createIdentityMatrix(int size)
+    public Matrix createIdentityMatrix(int n)
     {
-        Matrix result = new Matrix(size, size);
-
-        for (int i = 0; i < size; i++)
+        // Membuat matriks identitas
+        Matrix identityMatrix = new Matrix(n, n);
+        for (int i = 0; i < n; i++) 
         {
-            result.matrix[i][i] = 1;
+            for (int j = 0; j < n; j++) 
+            {
+                if (i == j) 
+                {
+                    identityMatrix.matrix[i][j] = 1;
+                } 
+                else
+                {
+                    identityMatrix.matrix[i][j] = 0;
+                }
+            }
         }
-        return result;
+        return identityMatrix;
     }
 
     public Matrix multiplyMatrix(Matrix M1, Matrix M2)
     {
+        // Melakukan perkalian matriks M1 dan M2
         Matrix result = new Matrix(M1.rowEff, M2.colEff);
 
         for (int i = 0; i < M1.rowEff; i++)
@@ -67,6 +82,7 @@ public class Operation
 
     public Matrix transposeMatrix(Matrix M)
     {
+        // Melakukan transpose matriks M
         Matrix result = new Matrix(M.colEff, M.rowEff);
 
         for (int i = 0; i < M.rowEff; i++)
@@ -81,6 +97,7 @@ public class Operation
 
     public Matrix expandCol(Matrix M1, Matrix M2)
     {
+        // Menggabungkan dua matriks berdasarkan kolom
         Matrix result = new Matrix(M1.rowEff, M1.colEff + M2.colEff);
 
         for (int i = 0; i < M1.rowEff; i++)
@@ -102,6 +119,7 @@ public class Operation
 
     public Matrix getMinor(Matrix M, int delRow, int delCol)
     {
+        // Mengembalikan matriks minor dari matriks M dengan menghapus baris ke-delRow dan kolom ke-delCol
         Matrix result = new Matrix(M.rowEff - 1, M.colEff - 1);
         int row = 0, col = 0;
 
@@ -130,6 +148,7 @@ public class Operation
 
     public Matrix takeLastRow(Matrix M)
     {
+        // Mengambil baris terakhir dari matriks M
         Matrix result = new Matrix(1, M.colEff);
 
         for (int i = 0; i < M.colEff; i++)
@@ -141,6 +160,7 @@ public class Operation
 
     public Matrix takeLastCol(Matrix M)
     {
+        // Mengambil kolom terakhir dari matriks M
         Matrix result = new Matrix(M.rowEff, 1);
 
         for (int i = 0; i < M.rowEff; i++)
@@ -152,6 +172,7 @@ public class Operation
     
     public Matrix dropLastRow(Matrix M)
     {
+        // Menghapus baris terakhir dari matriks M
         Matrix result = new Matrix(M.rowEff - 1, M.colEff);
 
         for (int i = 0; i < M.rowEff - 1; i++)
@@ -166,6 +187,7 @@ public class Operation
 
     public Matrix dropLastCol(Matrix M)
     {
+        // Menghapus kolom terakhir dari matriks M
         Matrix result = new Matrix(M.rowEff, M.colEff - 1);
 
         for (int i = 0; i < M.rowEff; i++)
