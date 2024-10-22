@@ -81,7 +81,7 @@ public class Inverse {
             if (augmented.matrix[i][i] == 0) {
                 for (int j = i + 1; j < n; j++) {
                     if (augmented.matrix[j][i] != 0) {
-                        op.swapRows(augmented, i, j);
+                        spl.swapRow(augmented, i, j);
                         break;
                     }
                 }
@@ -123,7 +123,7 @@ public class Inverse {
     public Matrix inverseDet(Matrix M){
         // Menghitung invers matriks dengan metode determinan
 
-        Matrix res = op.MultiplyMatrixByScalar(getAdj(M), 1/ det.determinantCofactor(M));
+        Matrix res = op.MultiplyMatrixByScalar(getAdj(M), 1 / det.determinantCofactor(M));
         op.errorRounding(res);
         return res;
     }
