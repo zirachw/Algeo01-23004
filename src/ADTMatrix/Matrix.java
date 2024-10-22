@@ -88,7 +88,6 @@ public class Matrix
             } 
             while (!valid);
         }
-        input.close();
     }
 
     public void writeMatrix()
@@ -238,15 +237,16 @@ public class Matrix
             {
                 for (int col = 0; col < this.colEff; col++)
                 {
-                    if (col < this.colEff - nEmpty)
+                    if (fileReader.hasNextDouble())
                     {
                         this.matrix[row][col] = fileReader.nextDouble();
                     }
-                    else
-                    {
-                        this.matrix[row][col] = -999;
-                    }
                 }
+            }
+
+            for (int k = this.colEff - 1; k >= this.colEff - nEmpty; k--) 
+            {
+                this.matrix[this.rowEff - 1][k] = -999.0;
             }
             fileReader.close();
         }
@@ -257,7 +257,7 @@ public class Matrix
         }
     }
 
-    public void exportMatrix(Matrix matrix)
+    public void exportMatrix()
     {
         // Menulis matriks ke file
         String filename;
@@ -268,11 +268,11 @@ public class Matrix
         {
             BufferedWriter writer = new BufferedWriter(new FileWriter("./test/" + filename));
 
-            for (int row = 0; row < matrix.rowEff; row++)
+            for (int row = 0; row < this.rowEff; row++)
             {
-                for (int col = 0; col < matrix.colEff; col++)
+                for (int col = 0; col < this.colEff; col++)
                 {
-                    writer.write(matrix.matrix[row][col] + " ");
+                    writer.write(this.matrix[row][col] + " ");
                 }
                 writer.newLine();
             }
