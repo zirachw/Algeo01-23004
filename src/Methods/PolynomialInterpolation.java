@@ -4,6 +4,7 @@ package Methods;
 // import from packages
 import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
+import Methods.SPL;
 
 // import java packages
 import java.lang.Math;
@@ -14,6 +15,8 @@ public class PolynomialInterpolation {
 
     // Inisialisasi scanner
     public Scanner input = new Scanner(System.in);
+
+    Operation op = new Operation();
     SPL spl = new SPL();
 
     public Matrix localInput() {
@@ -82,33 +85,10 @@ public class PolynomialInterpolation {
         return xi;
     }
 
-    public Matrix concatCol(Matrix M1, Matrix M2) {
-
-        // Menggabungkan dua matriks menjadi matriks augmented
-        if (M1.rowEff != M2.rowEff) {
-            throw new IllegalArgumentException("Jumlah baris kedua matriks harus sama.");
-        }
-
-        Matrix result = new Matrix(M1.rowEff, M1.colEff + M2.colEff);
-        for (int i = 0; i < M1.rowEff; i++) {
-
-            // Salin matriks pertama
-            for (int j = 0; j < M1.colEff; j++) {
-                result.matrix[i][j] = M1.matrix[i][j];
-            }
-
-            // Salin matriks kedua
-            for (int j = 0; j < M2.colEff; j++) {
-                result.matrix[i][j + M1.colEff] = M2.matrix[i][j];
-            }
-        }
-        return result;
-    }
-
     public Matrix calculateCoeff(Matrix xi, Matrix fx) {
 
         // Menghitung koefisien polinom
-        Matrix augmented = concatCol(xi, fx);
+        Matrix augmented = op.expandCol(xi, fx);
         Matrix gaussed = spl.gauss(augmented);
         Matrix cf = new Matrix(fx.rowEff, 1);
 

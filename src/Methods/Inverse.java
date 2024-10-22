@@ -4,21 +4,15 @@ package Methods;
 // import from packages
 import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
-
+import Methods.SPL;
+import Methods.Determinant;
 
 public class Inverse {
 
     // Selektor
     Operation op = new Operation();
-    Determinan det = new Determinan();
-
-    public void swapRows(Matrix M, int row1, int row2) {
-        // Menukar dua baris pada matriks
-
-        double[] temp = M.matrix[row1];
-        M.matrix[row1] = M.matrix[row2];
-        M.matrix[row2] = temp;
-    }
+    Determinant det = new Determinant();
+    SPL spl = new SPL();
 
     public boolean isZeroRow(double[] row) {
         // Mengecek baris dengan elemen bernilai semua 0
@@ -30,7 +24,6 @@ public class Inverse {
         }
         return true;
     }
-
 
     public boolean isZeroColumn(Matrix M) {
         // Mengecek kolom dengan elemen bernilai semua 0
@@ -50,7 +43,7 @@ public class Inverse {
         return false;
     }
 
-    public void multiplyRow(Matrix M, int row, double factor) {
+    public void multiplyRowInv(Matrix M, int row, double factor) {
         // Mengalikan baris dengan suatu faktor
 
         for (int j = 0; j < M.colEff; j++) {
@@ -58,52 +51,11 @@ public class Inverse {
         }
     }
 
-    public void subtractRows(Matrix M, int rowToSubtract, int targetRow, double factor) {
+    public void subtractRowInv(Matrix M, int rowToSubtract, int targetRow, double factor) {
         // Mengurangi satu baris dengan baris lainnya
 
         for (int j = 0; j < M.colEff; j++) {
             M.matrix[targetRow][j] -= factor * M.matrix[rowToSubtract][j];
-        }
-    }
-    public boolean checkInverse(Matrix M){
-        // Mengecek apakah matriks memiliki invers
-
-        // Bukan matrix persegi
-        if (!op.isSquareMatrix(M)) {
-            return false;
-        }
-
-        // Determinan matriks 0
-        if (det.determinanCofactor(M) == 0) {
-            return false;
-        }
-
-        // Matriks memiliki baris yang semuanya nol
-        for (int i = 0; i < M.rowEff; i++){
-            if (isZeroRow(M.matrix[i])) {
-                return false;
-            }
-        }
-
-        // Matriks memiliki kolom yang semuanya nol
-        for (int j = 0; j < M.colEff; j++){
-            if (isZeroColumn(M)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    public void errorRounding(Matrix M){
-        // Melakukan pembulatan galat pada matriks
-
-        for(int i =0; i < M.rowEff; i++){
-            for(int j = 0; j < M.colEff; j++){
-                if (M.matrix[i][j] > 0.99999999999 && M.matrix[i][j] < 1.00000000001){
-                    M.matrix[i][j] = 1;
-                } else if (M.matrix[i][j] > -0.00000000001 && M.matrix[i][j] < 0.00000000001){
-                    M.matrix[i][j] = 0;
-                }
-            }
         }
     }
 
@@ -129,7 +81,7 @@ public class Inverse {
             if (augmented.matrix[i][i] == 0) {
                 for (int j = i + 1; j < n; j++) {
                     if (augmented.matrix[j][i] != 0) {
-                        swapRows(augmented, i, j);
+                        op.swapRows(augmented, i, j);
                         break;
                     }
                 }
@@ -137,13 +89,13 @@ public class Inverse {
 
             // Membuat elemen diagonal bernilai 1
             double diagonal = augmented.matrix[i][i];
-            multiplyRow(augmented, i, 1 / diagonal);
+            multiplyRowInv(augmented, i, 1 / diagonal);
 
             // Eliminasi kolom lainnya
             for (int j = 0; j < n; j++) {
                 if (i != j) {
                     double factor = augmented.matrix[j][i];
-                    subtractRows(augmented, i, j, factor);
+                    subtractRowInv(augmented, i, j, factor);
                 }
             }
         }
@@ -155,7 +107,7 @@ public class Inverse {
                 inverseMatrix.matrix[i][j] = augmented.matrix[i][j + n];
             }
         }
-        errorRounding(inverseMatrix);
+        op.errorRounding(inverseMatrix);
 
         return inverseMatrix;
     }
@@ -163,27 +115,16 @@ public class Inverse {
     public Matrix getAdj(Matrix M){
         // Menghitung matriks adjoin dari matrix M
 
-        Matrix res = op.transposeMatrix(det.getKofaktor(M));
+        Matrix res = op.transposeMatrix(det.getCofactor(M));
 
         return res;
-    }
-
-    public Matrix scalarMultiple(Matrix M, double scalar){
-        // Mengalikan matriks dengan nilai skalar
-
-        for (int i = 0; i < M.rowEff; i++){
-            for (int j = 0; j < M.colEff; j++){
-                M.matrix[i][j] *= scalar;
-            }
-        }
-        return M;
     }
 
     public Matrix inverseDet(Matrix M){
         // Menghitung invers matriks dengan metode determinan
 
-        Matrix res = scalarMultiple(getAdj(M), 1/ det.determinanCofactor(M));
-        errorRounding(res);
+        Matrix res = op.MultiplyMatrixByScalar(getAdj(M), 1/ det.determinantCofactor(M));
+        op.errorRounding(res);
         return res;
     }
 }

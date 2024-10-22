@@ -300,7 +300,7 @@ public class SPL
                     if (result.matrix[rowSearch][col] != 0) 
                     {
                         swap = true;
-                        result = rowSwap(result, rowSearch, lenNonZero);
+                        result = swapRow(result, rowSearch, lenNonZero);
                         lenNonZero += 1;
                     }
                     else
@@ -352,7 +352,7 @@ public class SPL
         return result;
     }
 
-    public Matrix rowSwap(Matrix M, int row1, int row2)
+    public Matrix swapRow(Matrix M, int row1, int row2)
     {
         Matrix result = new Matrix();
 
