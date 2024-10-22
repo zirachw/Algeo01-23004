@@ -41,6 +41,21 @@ public class Operation
         return (M1.rowEff == M2.rowEff && M1.colEff == M2.colEff);
     }
 
+    public Matrix copyMatrix(Matrix M)
+    {
+        // Mengembalikan salinan matriks M
+        Matrix result = new Matrix(M.rowEff, M.colEff);
+
+        for (int i = 0; i < M.rowEff; i++)
+        {
+            for (int j = 0; j < M.colEff; j++)
+            {
+                result.matrix[i][j] = M.matrix[i][j];
+            }
+        }
+        return result;
+    }
+
     public Matrix createIdentityMatrix(int n)
     {
         // Membuat matriks identitas
@@ -61,7 +76,7 @@ public class Operation
         }
         return identityMatrix;
     }
-
+    
     public Matrix multiplyMatrix(Matrix M1, Matrix M2)
     {
         // Melakukan perkalian matriks M1 dan M2
@@ -75,6 +90,21 @@ public class Operation
                 {
                     result.matrix[i][j] += M1.matrix[i][k] * M2.matrix[k][j];
                 }
+            }
+        }
+        return result;
+    }
+
+    public Matrix multiplyMatrixByScalar(Matrix M, double scalar)
+    {
+        // Melakukan perkalian matriks M dengan skalar
+        Matrix result = new Matrix(M.rowEff, M.colEff);
+
+        for (int i = 0; i < M.rowEff; i++)
+        {
+            for (int j = 0; j < M.colEff; j++)
+            {
+                result.matrix[i][j] = M.matrix[i][j] * scalar;
             }
         }
         return result;
@@ -199,5 +229,26 @@ public class Operation
         }
         return result;
     }
+
+    public void errorRounding(Matrix M){
+        // Melakukan pembulatan galat pada matriks
+
+        for (int i =0; i < M.rowEff; i++)
+        {
+            for (int j = 0; j < M.colEff; j++)
+            {
+                if (M.matrix[i][j] > 0.99999999999 && M.matrix[i][j] < 1.00000000001)
+                {
+                    M.matrix[i][j] = 1;
+                } 
+                else if (M.matrix[i][j] > -0.00000000001 && M.matrix[i][j] < 0.00000000001)
+                {
+                    M.matrix[i][j] = 0;
+                }
+            }
+        }
+    }
     
 }
+
+
