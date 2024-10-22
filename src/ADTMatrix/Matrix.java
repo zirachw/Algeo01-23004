@@ -13,11 +13,11 @@ import java.io.IOException;
 public class Matrix 
 {
     /* Atribut */
-    public static Scanner input = new Scanner(System.in);
+    public Scanner input = new Scanner(System.in);
     public int rowEff;
     public int colEff;
     public double [][] matrix;
-
+    
     /* Konstruktor */
     public Matrix(int mRow, int nCol) 
     {
@@ -68,7 +68,6 @@ public class Matrix
         this.rowEff = mRow;
         this.colEff = nCol;
 
-        Scanner input = new Scanner(System.in);
         for (int row = 0; row < mRow; row++) 
         {
             boolean valid = false;

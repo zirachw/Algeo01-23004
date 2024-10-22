@@ -8,11 +8,12 @@ import ADTMatrix.Operation;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+
 // import java packages
 import java.lang.Math;
 import java.util.Scanner;
 
-public class Regresi {
+public class Regression {
     Operation op = new Operation();
     static Scanner input = new Scanner(System.in);
 
