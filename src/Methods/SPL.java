@@ -4,12 +4,13 @@ import java.util.*;
 
 import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
-
 import java.io.*;
 
 public class SPL
 {
+    Inverse inv = new Inverse();
     Operation op = new Operation();
+    Determinant det = new Determinant();
 
     public int nEff;
     public double[] x;
@@ -46,7 +47,7 @@ public class SPL
         }
         else
         {
-            M1 = inv.inverseAdjoint(M1);
+            M1 = inv.inverseDet(M1);
             M2 = op.multiplyMatrix(M1, M2);
 
             System.out.println("Solusi: ");
@@ -100,7 +101,7 @@ public class SPL
                 writer.newLine();
             }
             else {
-                M2 = inv.inverseAdjoint(M);
+                M2 = inv.inverseDet(M);
                 M1 = op.multiplyMatrix(M2, M1);
                 writer.write("Solusi: ");
                 for (int i = 0; i < M1.rowEff; i++){
@@ -186,7 +187,7 @@ public class SPL
         M1 = op.takeLastCol(M);
         M2 = op.dropLastCol(M);
         temp = op.copyMatrix(M2);
-
+        temp.writeMatrix();
         System.out.print("\n");
         if (M2.rowEff != M2.colEff)
         {
@@ -199,9 +200,9 @@ public class SPL
         else
         {
             System.out.println("Solusi: ");
-            for (int i = 0; i < M1.rowEff; i++)
+            for (int i = 0; i < M2.rowEff; i++)
             {
-                temp = cramerSwap(M2, M1, i);
+                temp = cramerSwap(M1, M2, i);
 
                 System.out.print("x");
                 System.out.print(i+1);
@@ -259,7 +260,7 @@ public class SPL
                 for (int i = 0; i < M1.rowEff; i++)
                 {
                     temp = cramerSwap(M2, M1, i);
-                    writer.write("x" + (i+1) + " = " + (det.determinantCofactor(temp) / det.determinantCofactor(m2)));
+                    writer.write("x" + (i+1) + " = " + (det.determinantCofactor(temp) / det.determinantCofactor(M2)));
                     if (i == M1.rowEff - 1) 
                     {
                         writer.newLine();
@@ -919,11 +920,25 @@ public class SPL
                         
                         if (cacheConst > 0)
                         {
-                            arrayString[cariSatu(M, i)] += String.format("+%.2f%c", cacheConst, arrayChar[j]);
+                            if (cacheConst == 1)
+                            {
+                                arrayString[cariSatu(M, i)] += String.format("+%c", arrayChar[j]);
+                            }
+                            else
+                            {
+                                arrayString[cariSatu(M, i)] += String.format("+%.2f%c", cacheConst, arrayChar[j]);
+                            }
                         }
                         else if (cacheConst < 0) 
                         {
-                            arrayString[cariSatu(M, i)] += String.format("%.2f%c", cacheConst, arrayChar[j]);
+                            if (cacheConst == -1)
+                            {
+                                arrayString[cariSatu(M, i)] += String.format("-%c", arrayChar[j]);
+                            }
+                            else
+                            {
+                                arrayString[cariSatu(M, i)] += String.format("%.2f%c", cacheConst, arrayChar[j]);
+                            }
                         }
                     }
                 }
@@ -950,7 +965,24 @@ public class SPL
                 trivial = false;
             }
         }
-
+        System.out.println("res:\n");
+        for (int i = 0; i < M.colEff-1; i++)
+        {
+            System.out.print(arrayRes[i]);
+            System.out.println();
+        }
+        System.out.println("char:\n");
+        for (int i = 0; i < M.colEff-1; i++)
+        {
+            System.out.print(arrayChar[i]);
+            System.out.println();
+        }
+        System.out.println("str:\n");
+        for (int i = 0; i < M.colEff-1; i++)
+        {
+            System.out.print(arrayString[i]);
+            System.out.println();
+        }
         System.out.println("Matriks Hasil: ");
         M.writeMatrix();
 
