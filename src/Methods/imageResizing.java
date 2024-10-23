@@ -69,7 +69,7 @@ public class imageResizing {
         Matrix result = new Matrix(16,16);
 
         Matrix MatrixXInverse = inverse.inverseGJ(bi.getMatrixX());
-        result = Operation.multiplyMatrix(MatrixXInverse, getMatrixD());
+        result = op.multiplyMatrix(MatrixXInverse, getMatrixD());
         return result;
     }
 
@@ -231,10 +231,10 @@ public class imageResizing {
                     {
                         curY = (int)idxAj;
                         Matrix[] surroundingPoint = getSurroundingPoint((int)(idxAi + 1), (int)(idxAj + 1), curImg);
-                        Aijused[curY][0] = Operation.multiplyMatrix(getMatrixXinvD(),surroundingPoint[0]);
-                        Aijused[curY][1] = Operation.multiplyMatrix(getMatrixXinvD(),surroundingPoint[1]);
-                        Aijused[curY][2] = Operation.multiplyMatrix(getMatrixXinvD(),surroundingPoint[2]);
-                        Aijused[curY][3] = Operation.multiplyMatrix(getMatrixXinvD(),surroundingPoint[3]);
+                        Aijused[curY][0] = op.multiplyMatrix(getMatrixXinvD(),surroundingPoint[0]);
+                        Aijused[curY][1] = op.multiplyMatrix(getMatrixXinvD(),surroundingPoint[1]);
+                        Aijused[curY][2] = op.multiplyMatrix(getMatrixXinvD(),surroundingPoint[2]);
+                        Aijused[curY][3] = op.multiplyMatrix(getMatrixXinvD(),surroundingPoint[3]);
                     }
 
                     // calculate the xtrace, ytrace used for f(xtrace,ytrace), 0 < xtrace, ytrace < 1
