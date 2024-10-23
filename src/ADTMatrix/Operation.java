@@ -130,18 +130,16 @@ public class Operation
         // Menggabungkan dua matriks berdasarkan kolom
         Matrix result = new Matrix(M1.rowEff, M1.colEff + M2.colEff);
 
-        for (int i = 0; i < M1.rowEff; i++)
-        {
-            for (int j = 0; j < result.colEff; j++)
-            {
-                if (j < M1.colEff)
-                {
-                    result.matrix[i][j] = M1.matrix[i][j];
-                }
-                else
-                {
-                    result.matrix[i][M1.colEff + j] = M2.matrix[i][j];
-                }
+        for (int i = 0; i < M1.rowEff; i++) {
+
+            // Salin matriks pertama
+            for (int j = 0; j < M1.colEff; j++) {
+                result.matrix[i][j] = M1.matrix[i][j];
+            }
+
+            // Salin matriks kedua
+            for (int j = 0; j < M2.colEff; j++) {
+                result.matrix[i][j + M1.colEff] = M2.matrix[i][j];
             }
         }
         return result;
