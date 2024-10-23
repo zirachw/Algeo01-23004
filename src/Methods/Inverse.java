@@ -56,16 +56,12 @@ public class Inverse {
         }
     }
 
-    public Matrix swapRow(Matrix M, int row1, int row2)
-    {
-        Matrix result = new Matrix();
+    public void swapRow(Matrix M, int row1, int row2) {
+        // Menukar dua baris pada matriks
 
-        result = op.copyMatrix(M);
-
-        result.matrix[row1] = M.matrix[row2];
-        result.matrix[row2] = M.matrix[row1];
-
-        return result;
+        double[] temp = M.matrix[row1];
+        M.matrix[row1] = M.matrix[row2];
+        M.matrix[row2] = temp;
     }
 
     public Matrix inverseGJ(Matrix M) {
