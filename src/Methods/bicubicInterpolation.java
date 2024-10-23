@@ -1,12 +1,16 @@
 package Methods;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 // import java.util.*;
 import java.lang.Math;
-
+import java.util.Scanner;
 
 import ADTMatrix.Matrix;
 
 public class bicubicInterpolation {
+
+    public Scanner input = new Scanner(System.in);
 
     public Matrix getMatrixX() 
     {
@@ -77,7 +81,10 @@ public class bicubicInterpolation {
     {
         Inverse inverse = new Inverse();
         Matrix temp = getMatrixX();
+        // temp.writeMatrix();
         Matrix inverted = inverse.inverseGJ(temp);
+        // inverted.writeMatrix(); 
+
         return multiplyMatrixBik(inverted, m16x1);
     }
 
@@ -87,10 +94,30 @@ public class bicubicInterpolation {
         int row = 0;
         for(int i = 0 ; i < 4;i++){
             for(int j = 0 ; j < 4;j++){
-                result += Maij.matrix[row][0] * Math.pow(a, i) * Math.pow(b, j);
+                result += Maij.matrix[row][0] * Math.pow(a, j) * Math.pow(b, i);
                 row++;
             }
         }
         return result;
+    }
+
+    public void exportBicubic(Matrix Maij, double a, double b)
+    {
+        double result = getFabResult(Maij, a, b);
+        String filename;
+        System.out.println("Masukkan nama file: ");
+        filename = input.nextLine() + ".txt";
+
+        try
+        {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("./test/" + filename));
+            writer.write("Hasil dari f(" +String.valueOf(a)+","+ String.valueOf(b)+ "): " +String.valueOf(result));
+            writer.close();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+
     }
 }
