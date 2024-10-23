@@ -4,7 +4,6 @@ package Methods;
 // import from packages
 import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
-import Methods.SPL;
 
 // import java packages
 import java.lang.Math;
@@ -121,7 +120,7 @@ public class PolynomialInterpolation {
         String fx = new String("f(x) = ");
         boolean first = true;
 
-        for (int i = f.rowEff - 1; i >= 0; i--) {
+        for (int i = 0; i <= f.rowEff - 1; i++) {
             double coeff = f.matrix[i][0];
 
             if (coeff != 0) {
