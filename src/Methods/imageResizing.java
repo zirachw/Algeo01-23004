@@ -15,52 +15,63 @@ public class imageResizing {
     Inverse inverse = new Inverse();
     Operation op = new Operation();
 
-    public Matrix getMatrixD()
-    {
-        /*Set Up Matrix D */
-        Matrix MatrixD = new Matrix(16,16);
-        double[][] var = new double[][]{{0,0},{1,0},{0,1},{1,1}};//range f,fx,fy,fxy
-        int[] rows = new int[]{0,4,8,12};//f 0-3, fx 4-7, fy 8-11, fxy 12-15    
-        int row, idx;
-        for (int x : rows){
-            for (double[] arr : var){
-                idx = 0;
-                for (int j = -1; j < 3; j++){
-                    for (int i = -1; i < 3; i++){
-                        row = x + (int)(arr[0] + arr[1]*2);
-                        if (x == 0){
-                            if (arr[0] == i && arr[1] == j){
-                                MatrixD.matrix[row][idx] = 1;
-                            }
-                        } else if (x == 4){
-                            if (arr[0]+1 == i && arr[1] == j){
-                                MatrixD.matrix[row][idx] = 0.5;
-                            } else if (arr[0]-1 == i && arr[1] == j){
-                                MatrixD.matrix[row][idx] = -0.5;
-                            }
-                        } else if (x == 8){
-                            if (arr[0] == i && arr[1] + 1 == j){
-                                MatrixD.matrix[row][idx] = 0.5;
-                            } else if (arr[0] == i && arr[1] - 1 == j){
-                                MatrixD.matrix[row][idx] = -0.5;
-                            }
-                        } else {
-                            if (arr[0]+1 == i && arr[1]+1 == j){
-                                MatrixD.matrix[row][idx] = 0.25;
-                            } else if (arr[0] == i && arr[1] - 1 == j){
-                                MatrixD.matrix[row][idx] = -0.25;
-                            } else if (arr[0]-1 == i && arr[1] == j){
-                                MatrixD.matrix[row][idx] = -0.25;
-                            } else if (arr[0] == i && arr[1] == j){
-                                MatrixD.matrix[row][idx] = 0.25;
-                            }
+    public Matrix getMatrixD() {
+        Matrix matrixD = new Matrix(16, 16);
+        
+        double[][] variationPoints = {
+            {0, 0},  
+            {1, 0}, 
+            {0, 1},
+            {1, 1}
+        };
+        
+        int[] blockRows = {0, 4, 8, 12};  // f: 0-3, fx: 4-7, fy: 8-11, fxy: 12-15
+        
+        for (int blockStart : blockRows) {
+            for (double[] point : variationPoints) {
+                int row = blockStart + (int)(point[0] + point[1] * 2);
+                int idx = 0;
+                
+                for (int j = -1; j < 3; j++) {
+                    for (int i = -1; i < 3; i++) {
+                        double value = 0.0;
+                        
+                        switch (blockStart) {
+                            case 0:  // Function values (f)
+                                if (point[0] == i && point[1] == j) {
+                                    value = 1.0;
+                                }
+                                break;
+                                
+                            case 4:  // X-derivatives (fx)
+                                if (point[1] == j) {  // Same y-coordinate
+                                    if (point[0] + 1 == i) value = 0.5;
+                                    else if (point[0] - 1 == i) value = -0.5;
+                                }
+                                break;
+                                
+                            case 8:  // Y-derivatives (fy)
+                                if (point[0] == i) {  // Same x-coordinate
+                                    if (point[1] + 1 == j) value = 0.5;
+                                    else if (point[1] - 1 == j) value = -0.5;
+                                }
+                                break;
+                                
+                            case 12: // Mixed derivatives (fxy)
+                                if (point[0] + 1 == i && point[1] + 1 == j) value = 0.25;
+                                else if (point[0] == i && point[1] - 1 == j) value = -0.25;
+                                else if (point[0] - 1 == i && point[1] == j) value = -0.25;
+                                else if (point[0] == i && point[1] == j) value = 0.25;
+                                break;
                         }
-                        idx++;
+                        
+                        matrixD.matrix[row][idx++] = value;
                     }
                 }
             }
         }
-        return MatrixD;
+        
+        return matrixD;
     }
 
     public Matrix getMatrixXinvD()
@@ -73,27 +84,35 @@ public class imageResizing {
         return result;
     }
 
-    public static Matrix[] getSurroundingPoint(int i, int j, BufferedImage input){
-        Matrix[] temp = new Matrix[4];
-        for (int q = 0; q < 4; q++){
-            temp[q] = new Matrix(16, 1);
+    public static Matrix[] getSurroundingPoints(int i, int j, BufferedImage input) {
+        // Constants for clarity
+        final int REGION_SIZE = 4;  // 4x4 region
+        final int MATRIX_HEIGHT = 16;  // 16 points total
+        final int CHANNEL_COUNT = 4;   // ARGB channels
+        
+        // Initialize matrices for each color channel
+        Matrix[] channelMatrices = new Matrix[CHANNEL_COUNT];
+        for (int channel = 0; channel < CHANNEL_COUNT; channel++) {
+            channelMatrices[channel] = new Matrix(MATRIX_HEIGHT, 1);
         }
-        int idx = 0;
-        for (int y = j-1; y < j+3; y++){
-            for (int x = i-1; x < i+3; x++){
-                double[] rgb = getColorRGB(input.getRGB(x, y));
-                //alpha
-                temp[0].matrix[idx][0] = rgb[0];
-                //red
-                temp[1].matrix[idx][0] = rgb[1];
-                //green
-                temp[2].matrix[idx][0] = rgb[2];
-                //blue
-                temp[3].matrix[idx][0] = rgb[3];
-                idx++;
+        
+        // Process the 4x4 region around the point
+        int matrixRow = 0;
+        for (int y = j - 1; y < j + REGION_SIZE - 1; y++) {
+            for (int x = i - 1; x < i + REGION_SIZE - 1; x++) {
+                // Get ARGB values for current pixel
+                double[] colorChannels = getColorRGB(input.getRGB(x, y));
+                
+                // Store each channel value in its respective matrix
+                for (int channel = 0; channel < CHANNEL_COUNT; channel++) {
+                    channelMatrices[channel].matrix[matrixRow][0] = colorChannels[channel];
+                }
+                
+                matrixRow++;
             }
         }
-        return temp;
+        
+        return channelMatrices;
     }
 
     public static double[] getColorRGB (int in){
@@ -105,45 +124,45 @@ public class imageResizing {
         return temp;
     }
 
-    public int getColorValue(double x, double y, Matrix[] a){
+    public int getColorValue(double x, double y, Matrix[] colorMatrices) {
+        final int GRID_SIZE = 4;
+        final int ALPHA = 0, RED = 1, GREEN = 2, BLUE = 3;
+        
+        // Calculate interpolated values for each channel
+        double[] channels = new double[4];
         int idx = 0;
-        double alpha = 0,red = 0, green = 0, blue = 0;
-        int al, r, g ,b;
-        for (int j = 0; j < 4; j++){
-            for (int i = 0; i < 4; i++){
-                alpha += a[0].matrix[idx][0]*Math.pow(x,i)*Math.pow(y,j);
-                red += a[1].matrix[idx][0]*Math.pow(x,i)*Math.pow(y,j);
-                green += a[2].matrix[idx][0]*Math.pow(x,i)*Math.pow(y,j);
-                blue += a[3].matrix[idx][0]*Math.pow(x,i)*Math.pow(y,j);
+        
+        // Calculate polynomial interpolation for each channel
+        for (int j = 0; j < GRID_SIZE; j++) {
+            double yPow = Math.pow(y, j);
+            for (int i = 0; i < GRID_SIZE; i++) {
+                double xPow = Math.pow(x, i);
+                double factor = xPow * yPow;
+                
+                channels[ALPHA] += colorMatrices[ALPHA].matrix[idx][0] * factor;
+                channels[RED] += colorMatrices[RED].matrix[idx][0] * factor;
+                channels[GREEN] += colorMatrices[GREEN].matrix[idx][0] * factor;
+                channels[BLUE] += colorMatrices[BLUE].matrix[idx][0] * factor;
+                
                 idx++;
             }
         }
-        al = (int)alpha;
-        if (al > 255){
-            al = 255;
-        } else if (al < 0){
-            al = 0;
+        
+        // Clamp all channels to valid range [0, 255]
+        int[] clampedChannels = new int[4];
+        for (int i = 0; i < 4; i++) {
+            clampedChannels[i] = clampTo8Bit((int)channels[i]);
         }
-        r = (int)red;
-        if (r > 255){
-            r = 255;
-        } else if (r < 0){
-            r = 0;
-        }
-        g = (int)green;
-        if (g > 255){
-            g = 255;
-        } else if (g < 0){
-            g = 0;
-        }
-        b = (int)blue;
-        if (b > 255){
-            b = 255;
-        } else if (b < 0){
-            b = 0;
-        }
-        int rgb = (al << 24) | (r << 16) | (g << 8) | b ;
-        return rgb;
+        
+        // Combine channels into final ARGB color
+        return (clampedChannels[ALPHA] << 24) | 
+               (clampedChannels[RED] << 16) | 
+               (clampedChannels[GREEN] << 8) | 
+               clampedChannels[BLUE];
+    }
+    
+    private int clampTo8Bit(int value) {
+        return Math.min(255, Math.max(0, value));
     }
 
     public void imageProccesing(double scaleX, double scaleY, String sourceImg, String proccesedImg)
@@ -230,7 +249,7 @@ public class imageResizing {
                     if(idxAj > (double)curY)
                     {
                         curY = (int)idxAj;
-                        Matrix[] surroundingPoint = getSurroundingPoint((int)(idxAi + 1), (int)(idxAj + 1), curImg);
+                        Matrix[] surroundingPoint = getSurroundingPoints((int)(idxAi + 1), (int)(idxAj + 1), curImg);
                         Aijused[curY][0] = op.multiplyMatrix(getMatrixXinvD(),surroundingPoint[0]);
                         Aijused[curY][1] = op.multiplyMatrix(getMatrixXinvD(),surroundingPoint[1]);
                         Aijused[curY][2] = op.multiplyMatrix(getMatrixXinvD(),surroundingPoint[2]);
