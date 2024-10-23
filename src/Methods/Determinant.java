@@ -3,11 +3,20 @@ package Methods;
 import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
 
+import java.math.BigDecimal;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.Scanner;
+import java.io.IOException;
+
 public class Determinant {
-    
+
+    Operation op = new Operation();
+    Scanner input = new Scanner(System.in);
+
     public  double determinantCofactor(Matrix M) 
     {
-        /* Menghitung determinan matriks dengan metode kofaktor */
+        /* Menghitung determinan matriks dengan metode cofactor */
         if (M.rowEff != M.colEff) 
         {
             System.out.println("Matriks bukan matriks persegi, determinan tidak dapat dihitung.");
@@ -100,17 +109,111 @@ public class Determinant {
     }    
 
     public  Matrix getCofactor(Matrix M){
-        /* Menghitung matriks kofaktor dari matrix M */
-        Matrix kofaktor = new Matrix(M.rowEff, M.colEff);
+        /* Menghitung matriks kofactor dari matrix M */
+        Matrix cofactor = new Matrix(M.rowEff, M.colEff);
 
         for(int i = 0 ; i < M.rowEff;i++)
         {
             for(int j = 0 ; j < M.colEff;j++)
             {
-                kofaktor.matrix[i][j] = Math.pow(-1, i+j) * determinantCofactor(Operation.getMinor(M, i, j));
+                cofactor.matrix[i][j] = Math.pow(-1, i+j) * determinantCofactor(op.getMinor(M, i, j));
             }
         }
-        return kofaktor;
+        return cofactor;
     }
 
+    public void exportDet(Matrix M, BigDecimal det)
+    {
+        // Menulis matriks ke file
+        String filename;
+        System.out.print("Masukkan nama file: ");
+        filename = input.nextLine() + ".txt";
+
+        // Menuliskan matriks ke layar
+        int[] columnWidths = new int[M.colEff];
+
+        for (int col = 0; col < M.colEff; col++) 
+        {
+            for (int row = 0; row < M.rowEff; row++) 
+            {
+                BigDecimal bd = new BigDecimal(M.matrix[row][col]);
+                bd = bd.stripTrailingZeros();
+                int width = (bd.toString()).length();
+                
+                if (width > columnWidths[col]) 
+                {
+                    columnWidths[col] = width;
+                }
+            }
+        }
+
+        try
+        {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("./test/" + filename));
+            
+            writer.write("Matriks: ");
+            writer.newLine();
+                    // Pretty Print :)
+            for (int row = 0; row < M.rowEff; row++)
+            {
+                if (M.rowEff == 1)
+                {
+                    writer.write("[");
+                }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < M.colEff; col++)
+                {
+                    BigDecimal bd = new BigDecimal(M.matrix[row][col]);
+                    bd = bd.stripTrailingZeros();
+                    writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
+                }
+
+                if (M.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
+            }
+            writer.newLine();
+            System.out.println(det);
+            if (M.rowEff != M.colEff)
+            {
+                writer.write("Determinan tidak dapat dihitung karena bukan matriks persegi.");
+            }
+            else
+            {
+                writer.write("Determinannya adalah: " + det);
+            }
+            writer.close();
+        }
+
+        catch (IOException e)
+        {
+            System.out.println("Terjadi kesalahan saat menulis file.");
+        }
+    }
 }
