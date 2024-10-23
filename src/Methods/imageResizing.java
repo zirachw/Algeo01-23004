@@ -19,7 +19,7 @@ public class imageResizing {
     {
         /*Set Up Matrix D */
         Matrix MatrixD = new Matrix(16,16);
-        double[][] var = new double[][]{{0,0},{1,0},{0,1},{1,1}};//range f,fx,fyu,fxy
+        double[][] var = new double[][]{{0,0},{1,0},{0,1},{1,1}};//range f,fx,fy,fxy
         int[] rows = new int[]{0,4,8,12};//f 0-3, fx 4-7, fy 8-11, fxy 12-15    
         int row, idx;
         for (int x : rows){
@@ -105,7 +105,7 @@ public class imageResizing {
         return temp;
     }
 
-    public int getFValueOf(double x, double y, Matrix[] a){
+    public int getColorValue(double x, double y, Matrix[] a){
         int idx = 0;
         double alpha = 0,red = 0, green = 0, blue = 0;
         int al, r, g ,b;
@@ -159,7 +159,7 @@ public class imageResizing {
             inputImg = ImageIO.read(imgFile);
             int height = inputImg.getHeight();
             int width = inputImg.getWidth();
-            System.out.println("Original Image Dimension: "+width+"x"+height);
+            // System.out.println("Original Image Dimension: "+width+"x"+height);
             curImg = new BufferedImage(width+4, height+4, BufferedImage.TYPE_INT_RGB);
 
             for (int i = 0; i < width; i++){
@@ -240,8 +240,7 @@ public class imageResizing {
                     // calculate the xtrace, ytrace used for f(xtrace,ytrace), 0 < xtrace, ytrace < 1
                     double xtrace = xCon - idxAi;
                     double ytrace = yCon - idxAj;
-                    //System.out.println("x: "+xcon+", y: "+ycon);
-                    int rgb = getFValueOf(xtrace, ytrace, Aijused[(int)idxAj]);
+                    int rgb = getColorValue(xtrace, ytrace, Aijused[(int)idxAj]);
 
                     outputImg.setRGB(i, j, rgb);
                 }
