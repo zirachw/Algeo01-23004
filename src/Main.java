@@ -8,7 +8,8 @@ public class Main {
     Scanner in = new Scanner (System.in);
     SPL spl = new SPL();
     Operation op = new Operation();
-    Regresi reg = new Regresi();
+    Regression reg = new Regression();
+    PolynomialInterpolation inter = new PolynomialInterpolation();
 
     /* MAIN PROGRAM */
     public void main(String[] args) 
@@ -1393,7 +1394,7 @@ public class Main {
 
         do
         {
-            System.out.print(">>");
+            System.out.print(">> ");
             line = in.nextLine();
             row = line.split(" ");
             try 
@@ -1404,12 +1405,12 @@ public class Main {
             {
                 input = 0;
             }
-            if (input <= 0 || input > 2) 
+            if (input <= 0 || input > 3) 
             {
                 System.out.println("Input tidak valid! Silahkan input dengan benar.");
             } 
         } 
-        while (input <= 0 || input > 2);
+        while (input <= 0 || input > 3);
 
         /* Memberi masukan */
         switch (input) 
@@ -1422,24 +1423,38 @@ public class Main {
             filepath = userDirectory + "/test/case/" + filename + ".txt";
 
             M.importMatrixWithEmpty(filepath, 1);
+            M.writeMatrix();
             break;
 
             case 2:
-            // M = InterpolasiPolinom.inputKeyboard();
+            M = inter.localInput();
             break;
         }
 
-        if (!(M.rowEff == 0 || M.colEff == 0)) 
-        {
-            // Matrix ai = InterpolasiPolinom.ai(InterpolasiPolinom.xi(InterpolasiPolinom.x(M)),InterpolasiPolinom.fx(M));
-            // double a = InterpolasiPolinom.a(M);
-            
-            // System.out.println("\nHasil Perhitungan Interpolasi Polinom");
-            // System.out.println("Penjabaran f(x):");
-            // System.out.println(InterpolasiPolinom.fxString(ai));
-            // System.out.println("Hasil substitusi dengan nilai x dari masukan:");
-            // System.out.println("f("+ a +") = " + InterpolasiPolinom.fa(ai, a));
-            
+        if (!(M.rowEff == 0 || M.colEff == 0)) {
+            M.writeMatrix();
+            Matrix x = inter.takeX(M);
+            Matrix fx = inter.takeFx(M);
+            x.writeMatrix();
+            fx.writeMatrix();
+            // Mendapatkan nilai x yang akan diinterpolasi
+            double xInterpolasi = inter.takeXValue(M);
+
+            // Membangun matriks xi berdasarkan nilai x
+            Matrix xi = inter.xi(x);
+
+            // Menghitung koefisien polinom cf
+            Matrix cf = inter.calculateCoeff(xi, fx);
+
+            // Menghitung f(x) pada titik yang diinterpolasi
+            double hasilInterpolasi = inter.calculateFx(cf, xInterpolasi);
+            // Menampilkan polinom yang terbentuk
+            String polinom = inter.showPolynom(cf);
+            System.out.println(polinom);
+
+            // Menampilkan hasil interpolasi
+            System.out.println("Nilai f(" + xInterpolasi + ") = " + hasilInterpolasi);
+        
             /* Output file */
             System.out.println("\nApakah ingin dalam bentuk file?");
             System.out.println("1. Ya");
