@@ -2,12 +2,16 @@ import Methods.*;
 import ADTMatrix.*;
 
 import java.util.Scanner;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class Main {
 
     Scanner in = new Scanner (System.in);
     SPL spl = new SPL();
+    Inverse inv = new Inverse();
     Operation op = new Operation();
+    Determinant det = new Determinant();
     Regression reg = new Regression();
     PolynomialInterpolation inter = new PolynomialInterpolation();
 
@@ -871,7 +875,10 @@ public class Main {
         String line;
         String[] row;
         Matrix M = new Matrix();
-        int dimensi, input;
+        int input, baris, kolom;
+        double detResult;
+        BigDecimal roundDet = new BigDecimal(0);
+
         // double det;
         System.out.println("\nPilih metode masukan:");
         System.out.println("1. File");
@@ -914,84 +921,105 @@ public class Main {
             case 2:
             do
             {
-                System.out.print("\nMasukkan dimensi matriks: ");
+                System.out.print("\nMasukkan jumlah baris: ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
                 {
-                    dimensi = Integer.parseInt(row[0]);
-                }
-                catch (NumberFormatException e) 
+                    baris = Integer.parseInt(row[0]);
+                } catch (NumberFormatException e) 
                 {
-                    dimensi = 0;
+                    baris = 0;
                 }
 
-                if (dimensi <= 0) 
+                if (baris <= 0) 
                 {
                     System.out.println("Input tidak valid! Silahkan input dengan benar.");
                 } 
             } 
-            while (dimensi <= 0);
+            while (baris <= 0);
+
+            do
+            {
+                System.out.print("Masukkan jumlah kolom: ");
+                line = in.nextLine();
+                row = line.split(" ");
+                try 
+                {
+                    kolom = Integer.parseInt(row[0]);
+                } 
+                catch (NumberFormatException e) 
+                {
+                    kolom = 0;
+                }
+
+                if (kolom <= 0) 
+                {
+                    System.out.println("Input tidak valid! Silahkan input dengan benar.");
+                } 
+            } 
+            while (kolom <= 0);
     
-            System.out.print("Masukkan nilai elemen pada matriks: \n");
-            M.readMatrix(dimensi, dimensi);
+            System.out.print("Masukkan nilai-nilai dari matriks per baris. Contoh jika 3x3: 1 0 1 \n");
+            M.readMatrix(baris, kolom);
             break;
 
             case 3:
             break;
         }
 
-        if (M.rowEff != M.colEff)
+        if (M.rowEff > 0 && M.colEff > 0)
         {
-            System.out.println("Matriks harus persegi untuk dihitung determinannya!");
-        }
-        else
-        {
-            if (M.rowEff > 0 && M.colEff > 0)
+            if (M.rowEff != M.colEff)
             {
-            
-                // det = determinan.detOBE(M);
-                System.out.print("\nDeterminannya adalah: ");
-                // System.out.println(det);
-    
-                System.out.println("Simpan dalam bentuk file?");
-                System.out.println("1. Ya");
-                System.out.println("2. Tidak");
-                do
-                {
-                    System.out.print(">>");
-                    line = in.nextLine();
-                    row = line.split(" ");
-                    try 
-                    {
-                        input = Integer.parseInt(row[0]);
-                    } 
-                    catch (NumberFormatException e) 
-                    {
-                        input = 0;
-                    }
-
-                    if (input <= 0 || input > 2) 
-                    {
-                        System.out.println("Input tidak valid! Silahkan input dengan benar.");
-                    } 
-                } 
-                while (input <= 0 || input > 2);
-    
-                switch (input)
-                {
-                    case 1:
-                    // determinan.detFile(M, det);
-    
-                    case 2:
-                    System.out.println("\nKembali ke menu utama...");
-                    break;
-                }
+                System.out.println("Matriks harus persegi untuk dihitung determinannya!");
             }
             else
             {
-                System.out.println("Operasi gagal, kembali ke menu utama...");
+                detResult = det.determinantOBE(M);
+                roundDet = new BigDecimal(detResult).setScale(10, RoundingMode.HALF_UP);
+                roundDet = roundDet.stripTrailingZeros();
+                System.out.print("\nDeterminannya adalah: ");
+                System.out.println(roundDet.toPlainString());
             }
+
+            System.out.println("Simpan dalam bentuk file?");
+            System.out.println("1. Ya");
+            System.out.println("2. Tidak");
+            do
+            {
+                System.out.print(">>");
+                line = in.nextLine();
+                row = line.split(" ");
+                try 
+                {
+                    input = Integer.parseInt(row[0]);
+                } 
+                catch (NumberFormatException e) 
+                {
+                    input = 0;
+                }
+
+                if (input <= 0 || input > 2) 
+                {
+                    System.out.println("Input tidak valid! Silahkan input dengan benar.");
+                } 
+            } 
+            while (input <= 0 || input > 2);
+
+            switch (input)
+            {
+                case 1:
+                det.exportDet(M, roundDet);
+
+                case 2:
+                System.out.println("\nKembali ke menu utama...");
+                break;
+            }
+        }
+        else
+        {
+            System.out.println("Operasi gagal, kembali ke menu utama...");
         }
     }
 
@@ -1001,7 +1029,10 @@ public class Main {
         String line;
         String[] row;
         Matrix M = new Matrix();
-        int dimensi, input;
+        int input, baris, kolom;
+        double detResult;
+        BigDecimal roundDet = new BigDecimal(0);
+
         // double det;
         System.out.println("\nPilih metode masukan:");
         System.out.println("1. File");
@@ -1044,84 +1075,105 @@ public class Main {
             case 2:
             do
             {
-                System.out.print("\nMasukkan dimensi matriks: ");
+                System.out.print("\nMasukkan jumlah baris: ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
                 {
-                    dimensi = Integer.parseInt(row[0]);
-                } 
-                catch (NumberFormatException e) 
+                    baris = Integer.parseInt(row[0]);
+                } catch (NumberFormatException e) 
                 {
-                    dimensi = 0;
+                    baris = 0;
                 }
-                
-                if (dimensi <= 0) 
+
+                if (baris <= 0) 
                 {
                     System.out.println("Input tidak valid! Silahkan input dengan benar.");
                 } 
             } 
-            while (dimensi <= 0);
+            while (baris <= 0);
+
+            do
+            {
+                System.out.print("Masukkan jumlah kolom: ");
+                line = in.nextLine();
+                row = line.split(" ");
+                try 
+                {
+                    kolom = Integer.parseInt(row[0]);
+                } 
+                catch (NumberFormatException e) 
+                {
+                    kolom = 0;
+                }
+
+                if (kolom <= 0) 
+                {
+                    System.out.println("Input tidak valid! Silahkan input dengan benar.");
+                } 
+            } 
+            while (kolom <= 0);
     
-            System.out.print("Masukkan nilai elemen pada matriks: \n");
-            M.readMatrix(dimensi, dimensi);
+            System.out.print("Masukkan nilai-nilai dari matriks per baris. Contoh jika 3x3: 1 0 1 \n");
+            M.readMatrix(baris, kolom);
             break;
 
             case 3:
             break;
         }
 
-        if (M.rowEff != M.colEff)
+        if (M.rowEff > 0 && M.colEff > 0)
         {
-            System.out.println("Matriks harus persegi untuk dihitung determinannya!");
-        }
-        else
-        {
-            if (M.rowEff > 0 && M.colEff > 0)
+            if (M.rowEff != M.colEff)
             {
-            
-                // det = determinan.determinanKofaktor(M);
-                System.out.print("\nDeterminannya adalah: ");
-                // System.out.println(det);
-    
-                System.out.println("Simpan dalam bentuk file?");
-                System.out.println("1. Ya");
-                System.out.println("2. Tidak");
-                do
-                {
-                    System.out.print(">>");
-                    line = in.nextLine();
-                    row = line.split(" ");
-                    try 
-                    {
-                        input = Integer.parseInt(row[0]);
-                    } 
-                    catch (NumberFormatException e) 
-                    {
-                        input = 0;
-                    }
-
-                    if (input <= 0 || input > 2) 
-                    {
-                        System.out.println("Input tidak valid! Silahkan input dengan benar.");
-                    } 
-                } 
-                while (input <= 0 || input > 2);
-    
-                switch (input)
-                {
-                    case 1:
-                    // determinan.detFile(M, det);
-    
-                    case 2:
-                    System.out.println("\nKembali ke menu utama...");
-                    break;
-                }
+                System.out.println("Matriks harus persegi untuk dihitung determinannya!");
             }
             else
             {
-                System.out.println("Operasi gagal, kembali ke menu utama...");
+                detResult = det.determinantCofactor(M);
+                roundDet = new BigDecimal(detResult).setScale(10, RoundingMode.HALF_UP);
+                roundDet = roundDet.stripTrailingZeros();
+                System.out.print("\nDeterminannya adalah: ");
+                System.out.println(roundDet.toPlainString());
             }
+
+            System.out.println("Simpan dalam bentuk file?");
+            System.out.println("1. Ya");
+            System.out.println("2. Tidak");
+            do
+            {
+                System.out.print(">>");
+                line = in.nextLine();
+                row = line.split(" ");
+                try 
+                {
+                    input = Integer.parseInt(row[0]);
+                } 
+                catch (NumberFormatException e) 
+                {
+                    input = 0;
+                }
+
+                if (input <= 0 || input > 2) 
+                {
+                    System.out.println("Input tidak valid! Silahkan input dengan benar.");
+                } 
+            } 
+            while (input <= 0 || input > 2);
+
+            switch (input)
+            {
+                case 1:
+                det.exportDet(M, roundDet);
+
+                case 2:
+                System.out.println("\nKembali ke menu utama...");
+                break;
+            }
+        }
+        else
+        {
+            System.out.println("Operasi gagal, kembali ke menu utama...");
         }
     }
     
@@ -1202,13 +1254,13 @@ public class Main {
 
         if (M.rowEff > 0 && M.colEff > 0)
         {
-            if (M.rowEff == 0)
-            { // determinan.determinanKofaktor(M) == 0
+            if (det.determinantCofactor(M) == 0)
+            {
                 System.out.println("Matriks tidak memiliki balikan.");
             }
             else
             {
-                // M = balikan.inverseIdentitas(M);
+                M = inv.inverseGJ(M);
                 System.out.print("\nBalikannya adalah: \n");
                 M.writeMatrix();
         
@@ -1326,13 +1378,13 @@ public class Main {
 
         if (M.rowEff > 0 && M.colEff > 0){
             // Jika determinan dari 
-            if (M.rowEff == 0) // determinan.determinanKofaktor(M) == 0
+            if (det.determinantCofactor(M) == 0)
             { 
                 System.out.println("Matriks tidak memiliki balikan.");
             }
             else
             {
-                // M = balikan.inverseAdjoint(M);
+                M = inv.inverseDet(M);
                 System.out.print("\nBalikannya adalah: \n");
                 M.writeMatrix();
         
