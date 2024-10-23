@@ -4,15 +4,12 @@ package Methods;
 // import from packages
 import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
-import Methods.SPL;
-import Methods.Determinant;
 
 public class Inverse {
 
     // Selektor
     Operation op = new Operation();
     Determinant det = new Determinant();
-    SPL spl = new SPL();
 
     public boolean isZeroRow(double[] row) {
         // Mengecek baris dengan elemen bernilai semua 0
@@ -59,6 +56,18 @@ public class Inverse {
         }
     }
 
+    public Matrix swapRow(Matrix M, int row1, int row2)
+    {
+        Matrix result = new Matrix();
+
+        result = op.copyMatrix(M);
+
+        result.matrix[row1] = M.matrix[row2];
+        result.matrix[row2] = M.matrix[row1];
+
+        return result;
+    }
+
     public Matrix inverseGJ(Matrix M) {
         // Menghitung invers matriks dengan metode Gauss-Jordan
 
@@ -81,7 +90,7 @@ public class Inverse {
             if (augmented.matrix[i][i] == 0) {
                 for (int j = i + 1; j < n; j++) {
                     if (augmented.matrix[j][i] != 0) {
-                        spl.swapRow(augmented, i, j);
+                        swapRow(augmented, i, j);
                         break;
                     }
                 }
@@ -123,7 +132,7 @@ public class Inverse {
     public Matrix inverseDet(Matrix M){
         // Menghitung invers matriks dengan metode determinan
 
-        Matrix res = op.MultiplyMatrixByScalar(getAdj(M), 1 / det.determinantCofactor(M));
+        Matrix res = op.multiplyMatrixByScalar(getAdj(M), 1 / det.determinantCofactor(M));
         op.errorRounding(res);
         return res;
     }
