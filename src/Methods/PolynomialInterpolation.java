@@ -108,6 +108,13 @@ public class PolynomialInterpolation {
         return M.matrix[M.rowEff][0];
     }
 
+    public double takeXValueFile(Matrix M) {
+
+        // Fungsi untuk mengambil nilai x yang akan dicari interpolasinya
+
+        return M.matrix[M.rowEff - 1][0];
+    }
+
     public Matrix xi(Matrix x) {
         // Membuat matriks xi untuk polinom interpolasi
 
