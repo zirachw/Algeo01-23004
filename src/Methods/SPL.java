@@ -5,6 +5,8 @@ import java.util.*;
 import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
 import java.io.*;
+import java.math.RoundingMode;
+import java.math.BigDecimal;
 
 public class SPL
 {
@@ -43,12 +45,15 @@ public class SPL
         }
         else if (det.determinantCofactor(M1) == 0)
         {
-            System.out.println("Matriks tidak memiliki inverse.");
+            System.out.println("Tidak dapat menggunakan metode matriks invers karena bukan matriks persegi");
         }
         else
         {
             M1 = inv.inverseDet(M1);
+            M1.writeMatrix();
+            M2.writeMatrix();
             M2 = op.multiplyMatrix(M1, M2);
+            M2.writeMatrix();
 
             System.out.println("Solusi: ");
             for (int i = 0; i < M2.rowEff; i++)
@@ -69,44 +74,167 @@ public class SPL
 
         String filename;
 
-        M1 = op.takeLastCol(M);
-        M2 = op.dropLastCol(M);
+        M1 = op.dropLastCol(M);
+        M2 = op.takeLastCol(M);
 
         System.out.print("\nMasukkan nama file: ");
         filename = input.nextLine() + ".txt";
 
+        // Menuliskan matriks ke layar
+        int[] columnWidths = new int[M.colEff];
+        int width = 0;
+
+        for (int col = 0; col < M.colEff; col++) 
+        {
+            for (int row = 0; row < M.rowEff; row++) 
+            {
+                BigDecimal bd = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                width = (bd.toString()).length();
+                
+                if (width > columnWidths[col]) 
+                {
+                    columnWidths[col] = width;
+                }
+            }
+        }
+
         try
         {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/" + filename));
-
-            writer.write("Matriks: ");
+            String userDirectory = System.getProperty("user.dir");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            
+            writer.write("Matriks Augmented: ");
             writer.newLine();
-            for (int i = 0; i < M.rowEff; i++)
+
+            // Pretty Print :)
+            for (int row = 0; row < M.rowEff; row++)
             {
-                for (int j = 0; j < M.colEff; j++)
+                if (M.rowEff == 1)
                 {
-                    writer.write(M.matrix[i][j] + ((j == M.colEff - 1) ? "" : " "));
+                    writer.write("[");
                 }
-            writer.newLine();
-            }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
 
-            writer.newLine();
-            if (M2.rowEff != M2.colEff)
-            {
-                writer.write("Matriks memerlukan " + M2.colEff + " persamaan untuk dapat diselesaikan");
+                for (int col = 0; col < M.colEff; col++)
+                {
+                    BigDecimal bd = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
+                }
+
+                if (M.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
             }
-            else if (det.determinantCofactor(M2) == 0)
+            writer.newLine();
+
+            if (M1.rowEff != M1.colEff)
             {
-                writer.write("Tidak dapat menggunakan metode matriks balikan!");
+                writer.write("Matriks memerlukan " + M1.colEff + " persamaan untuk dapat diselesaikan");
+            }
+            else if (det.determinantCofactor(M1) == 0)
+            {
+                writer.write("Tidak dapat menggunakan metode matriks invers karena bukan matriks persegi");
                 writer.newLine();
             }
             else {
-                M2 = inv.inverseDet(M);
-                M1 = op.multiplyMatrix(M2, M1);
+                M1 = inv.inverseDet(M1);
+                M2 = op.multiplyMatrix(M1, M2);
+                int[] columnInvWidths = new int[M.colEff];
+                width = 0;
+    
+                for (int col = 0; col < M2.colEff; col++) 
+                {
+                    for (int row = 0; row < M2.rowEff; row++) 
+                    {
+                        BigDecimal bdi = new BigDecimal(M2.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                        width = (bdi.toString()).length();
+                        
+                        if (width > columnInvWidths[col]) 
+                        {
+                            columnInvWidths[col] = width;
+                        }
+                    }
+                }
+    
+                writer.write("Matriks Hasil: ");
+                writer.newLine();
+    
+                // Pretty M :)
+                for (int row = 0; row < M2.rowEff; row++)
+                {
+                    if (M2.rowEff == 1)
+                    {
+                        writer.write("[");
+                    }
+                    else if (row == 0)
+                    {
+                        writer.write("┌");
+                    }
+                    else if (row == M2.rowEff - 1)
+                    {
+                        writer.write("└");
+                    }
+                    else
+                    {
+                        writer.write("|");
+                    }
+    
+                    for (int col = 0; col < M2.colEff; col++) {
+                        BigDecimal bdi = new BigDecimal(M2.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                        writer.write(String.format("%" + (columnInvWidths[col] + 2) + "s", bdi.toPlainString()));
+                    }
+    
+                    if (M2.rowEff == 1)
+                    {
+                        writer.write("  ]");
+                    }
+                    else if (row == 0)
+                    {
+                        writer.write("  ┐");
+                    }
+                    else if (row == M2.rowEff - 1)
+                    {
+                        writer.write("  ┘");
+                    }
+                    else
+                    {
+                        writer.write("  |");
+                    }
+                    writer.newLine();
+                }
+    
+                writer.newLine();
                 writer.write("Solusi: ");
-                for (int i = 0; i < M1.rowEff; i++){
-                    writer.write("x" + (i+1) + " = " + M1.matrix[i][0]);
-                    if (i == M1.rowEff - 1){
+                writer.newLine();
+
+                for (int i = 0; i < M2.rowEff; i++){
+                    writer.write("x" + (i+1) + " = " + M2.matrix[i][0]);
+                    if (i == M2.rowEff - 1){
                         writer.newLine();
                     }
                     else{
@@ -187,8 +315,7 @@ public class SPL
         M1 = op.takeLastCol(M);
         M2 = op.dropLastCol(M);
         temp = op.copyMatrix(M2);
-        temp.writeMatrix();
-        System.out.print("\n");
+
         if (M2.rowEff != M2.colEff)
         {
             System.out.println("Matriks memerlukan " + M2.colEff + " persamaan untuk dapat diselesaikan.");
@@ -228,22 +355,78 @@ public class SPL
         System.out.print("\nMasukkan nama file: ");
         filename = input.nextLine() + ".txt";
 
-        try 
+        // Menuliskan matriks ke layar
+        int[] columnWidths = new int[M.colEff];
+        int width = 0;
+
+        for (int col = 0; col < M.colEff; col++) 
         {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/" + filename));
-
-            writer.write("Matriks:");
-            writer.newLine();
-            for (int i = 0; i < M.rowEff; i++)
+            for (int row = 0; row < M.rowEff; row++) 
             {
-                for (int j = 0; j < M.colEff; j++)
+                BigDecimal bd = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                width = (bd.toString()).length();
+                
+                if (width > columnWidths[col]) 
                 {
-                    writer.write(M.matrix[i][j] + ((j == M.colEff-1) ? "" : " "));
+                    columnWidths[col] = width;
                 }
-            writer.newLine();
             }
+        }
 
+        try
+        {
+            String userDirectory = System.getProperty("user.dir");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            
+            writer.write("Matriks Augmented: ");
             writer.newLine();
+
+            // Pretty Print :)
+            for (int row = 0; row < M.rowEff; row++)
+            {
+                if (M.rowEff == 1)
+                {
+                    writer.write("[");
+                }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < M.colEff; col++)
+                {
+                    BigDecimal bd = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
+                }
+
+                if (M.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
+            }
+            writer.newLine();
+
             if (M2.rowEff != M2.colEff)
             {
                 writer.write("Matriks memerlukan " + M2.colEff + " persamaan untuk dapat diselesaikan.");
@@ -257,11 +440,11 @@ public class SPL
             else
             {
                 System.out.println("Solusi: ");
-                for (int i = 0; i < M1.rowEff; i++)
+                for (int i = 0; i < M2.rowEff; i++)
                 {
-                    temp = cramerSwap(M2, M1, i);
+                    temp = cramerSwap(M1, M2, i);
                     writer.write("x" + (i+1) + " = " + (det.determinantCofactor(temp) / det.determinantCofactor(M2)));
-                    if (i == M1.rowEff - 1) 
+                    if (i == M2.rowEff - 1) 
                     {
                         writer.newLine();
                     }
@@ -426,7 +609,7 @@ public class SPL
         return result;
     }   
 
-    public void gaussSPL(Matrix M)
+    public void gaussSPL(Matrix M, Matrix temp)
     {
         // Menerima matriks gauss/gauss jordan SPL
         int solusi;
@@ -446,7 +629,7 @@ public class SPL
             break;
 
             case 2:
-            solusiBanyak(M);
+            solusiBanyak(M, temp);
             break;
 
             case 3:
@@ -456,32 +639,32 @@ public class SPL
     }
 
     // Prosedur untuk membuat file dari solusi SPL
-    public void gaussSPLFile(Matrix M)
+    public void gaussSPLFile(Matrix M, Matrix temp)
     {
         int solusi;
         String filename;
 
         op.errorRounding(M);
         solusi = checkSolusi(M);
-        System.out.print("\nMasukkan nama file: (tambahkan .txt di akhir)");
+        System.out.print("\nMasukkan nama file: ");
         filename = input.nextLine() + ".txt";
 
         switch (solusi)
         {
             case 0:
-            solusiKosongFile(M, filename);
+            solusiKosongFile(M, temp, filename);
             break;
 
             case 1:
-            solusiUnikFile(M, filename);
+            solusiUnikFile(M, temp, filename);
             break;
 
             case 2:
-            solusiBanyakFile(M, filename);
+            solusiBanyakFile(M, temp, filename);
             break;
 
             case 3:
-            solusiNoneFile(M, filename);
+            solusiNoneFile(M, temp, filename);
             break;
         }
     }
@@ -636,8 +819,8 @@ public class SPL
 
         System.out.println("Matriks Hasil: ");
         M.writeMatrix();
-        
         System.out.println();
+        System.out.println("Solusi SPL: ");
         System.out.println("Persamaan linear kosong, semua variabel nilai memenuhi.");
         
 
@@ -653,7 +836,7 @@ public class SPL
 
     
     // Prosedur untuk menulis solusi kosong di file
-    public void solusiKosongFile(Matrix M, String filename)
+    public void solusiKosongFile(Matrix M, Matrix temp, String filename)
     {
         char var = 'S';
         char freeVariables[] = new char[M.colEff-1];
@@ -672,21 +855,144 @@ public class SPL
             else var += 1;
         }
 
+        // Menuliskan matriks ke layar
+        int[] columnWidths = new int[temp.colEff];
+        int width = 0;
+
+        for (int col = 0; col < temp.colEff; col++) 
+        {
+            for (int row = 0; row < temp.rowEff; row++) 
+            {
+                BigDecimal bd = new BigDecimal(temp.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                width = (bd.toString()).length();
+                
+                if (width > columnWidths[col]) 
+                {
+                    columnWidths[col] = width;
+                }
+            }
+        }
+
         try
-        {   
+        {
             String userDirectory = System.getProperty("user.dir");
             BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            
+            writer.write("Matriks Augmented: ");
+            writer.newLine();
+
+            // Pretty Print :)
+            for (int row = 0; row < temp.rowEff; row++)
+            {
+                if (temp.rowEff == 1)
+                {
+                    writer.write("[");
+                }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == temp.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < temp.colEff; col++)
+                {
+                    BigDecimal bd = new BigDecimal(temp.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
+                }
+
+                if (temp.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == temp.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
+            }
+            writer.newLine();
+
+            int[] columnInvWidths = new int[M.colEff];
+            width = 0;
+
+            for (int col = 0; col < M.colEff; col++) 
+            {
+                for (int row = 0; row < M.rowEff; row++) 
+                {
+                    BigDecimal bdi = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    width = (bdi.toString()).length();
+                    
+                    if (width > columnInvWidths[col]) 
+                    {
+                        columnInvWidths[col] = width;
+                    }
+                }
+            }
 
             writer.write("Matriks Hasil: ");
             writer.newLine();
-            for (int i = 0; i < M.rowEff; i++)
+
+            // Pretty M :)
+            for (int row = 0; row < M.rowEff; row++)
             {
-                for (int j = 0; j < M.colEff; j++)
+                if (M.rowEff == 1)
                 {
-                    writer.write(M.matrix[i][j] + ((j == M.colEff - 1) ? "" : " "));
+                    writer.write("[");
                 }
-            writer.newLine();
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < M.colEff; col++) {
+                    BigDecimal bdi = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnInvWidths[col] + 2) + "s", bdi.toPlainString()));
+                }
+
+                if (M.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
             }
+
+            writer.newLine();
+            writer.write("Solusi SPL: ");
             writer.newLine();
 
             // Write perline
@@ -760,8 +1066,9 @@ public class SPL
 
         System.out.println("Matriks Hasil: ");
         M.writeMatrix();
-
         System.out.println();
+        System.out.println("Solusi SPL: ");
+        
         for (int i = 0; i < M.colEff-1; i++)
         {
             System.out.print("x");
@@ -773,7 +1080,7 @@ public class SPL
     }
     
     // Prosedur untuk menulis file solusi unik dari persamaan gauss
-    public void solusiUnikFile(Matrix M, String filename)
+    public void solusiUnikFile(Matrix M, Matrix temp, String filename)
     {
         double cache;
         double arrayRes[] = new double[M.colEff-1];
@@ -783,33 +1090,156 @@ public class SPL
             for (int i = 0; i < M.colEff-1; i++)
             {
                 arrayRes[i] = 0;
-        }
-
-        for (int i = M.rowEff-1; i > -1; i--)
-        {
-            cache = M.matrix[i][M.colEff-1];
-            for(int j = i; j < M.colEff-1; j++)
-            {
-                cache -= arrayRes[j] * M.matrix[i][j];
             }
-            arrayRes[i] = cache;
-        }    
+
+            for (int i = M.rowEff-1; i > -1; i--)
+            {
+                cache = M.matrix[i][M.colEff-1];
+                for(int j = i; j < M.colEff-1; j++)
+                {
+                    cache -= arrayRes[j] * M.matrix[i][j];
+                }
+                arrayRes[i] = cache;
+            }    
+
+            // Menuliskan matriks ke layar
+            int[] columnWidths = new int[temp.colEff];
+            int width = 0;
+
+            for (int col = 0; col < temp.colEff; col++) 
+            {
+                for (int row = 0; row < temp.rowEff; row++) 
+                {
+                    BigDecimal bd = new BigDecimal(temp.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    width = (bd.toString()).length();
+                    
+                    if (width > columnWidths[col]) 
+                    {
+                        columnWidths[col] = width;
+                    }
+                }
+            }
+
             String userDirectory = System.getProperty("user.dir");
             BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            
+            writer.write("Matriks Augmented: ");
+            writer.newLine();
 
-            writer.write("Matriks Hasil:");
-            writer.newLine();
-            for (int i= 0; i<M.rowEff; i++)
+            // Pretty Print :)
+            for (int row = 0; row < temp.rowEff; row++)
             {
-                for (int j=0; j<M.colEff; j++)
+                if (temp.rowEff == 1)
                 {
-                    writer.write(M.matrix[i][j] + ((j == M.colEff-1) ? "" : " "));
+                    writer.write("[");
                 }
-            writer.newLine();
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == temp.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < temp.colEff; col++)
+                {
+                    BigDecimal bd = new BigDecimal(temp.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
+                }
+
+                if (temp.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == temp.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
             }
             writer.newLine();
 
-            writer.write("Solusi: ");
+            int[] columnInvWidths = new int[M.colEff];
+            width = 0;
+
+            for (int col = 0; col < M.colEff; col++) 
+            {
+                for (int row = 0; row < M.rowEff; row++) 
+                {
+                    BigDecimal bdi = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    width = (bdi.toString()).length();
+                    
+                    if (width > columnInvWidths[col]) 
+                    {
+                        columnInvWidths[col] = width;
+                    }
+                }
+            }
+
+            writer.write("Matriks Hasil: ");
+            writer.newLine();
+
+            // Pretty M :)
+            for (int row = 0; row < M.rowEff; row++)
+            {
+                if (M.rowEff == 1)
+                {
+                    writer.write("[");
+                }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < M.colEff; col++) {
+                    BigDecimal bdi = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnInvWidths[col] + 2) + "s", bdi.toPlainString()));
+                }
+
+                if (M.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
+            }
+
+            writer.newLine();
+            writer.write("Solusi SPL: ");
+            writer.newLine();
+
             for (int i = 0; i < M.colEff-1; i++)
             {
                 writer.write("x" + (i + 1) + " = " + arrayRes[i]);
@@ -836,7 +1266,7 @@ public class SPL
 
     
     // Prosedur untuk mencari solusi banyak dari persamaan gauss
-    public void solusiBanyak(Matrix M)
+    public void solusiBanyak(Matrix M, Matrix temp)
     {
         boolean trivial, realzerp;
         double cache, arrayRes[] = new double[M.colEff-1];
@@ -862,6 +1292,7 @@ public class SPL
         var = 'S';
         M = removeRowAll0(M);
 
+        boolean first = true;
         for (int i = M.rowEff-1; i > -1; i--)
         {
             cache = M.matrix[i][M.colEff-1];
@@ -926,7 +1357,16 @@ public class SPL
                             }
                             else
                             {
-                                arrayString[cariSatu(M, i)] += String.format("+%.2f%c", cacheConst, arrayChar[j]);
+                                BigDecimal cacheRound = new BigDecimal(cacheConst).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
+                                if (first)
+                                {
+                                    arrayString[cariSatu(M, i)] += String.format("%s%c", cacheRound.toString(), arrayChar[j]);
+                                    first = false;
+                                }
+                                else
+                                {
+                                    arrayString[cariSatu(M, i)] += String.format("+%s%c", cacheRound.toString(), arrayChar[j]);
+                                }
                             }
                         }
                         else if (cacheConst < 0) 
@@ -937,7 +1377,8 @@ public class SPL
                             }
                             else
                             {
-                                arrayString[cariSatu(M, i)] += String.format("%.2f%c", cacheConst, arrayChar[j]);
+                                BigDecimal cacheRound = new BigDecimal(cacheConst).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
+                                arrayString[cariSatu(M, i)] += String.format("%s%c", cacheRound.toString(), arrayChar[j]);
                             }
                         }
                     }
@@ -965,28 +1406,34 @@ public class SPL
                 trivial = false;
             }
         }
-        System.out.println("res:\n");
-        for (int i = 0; i < M.colEff-1; i++)
-        {
-            System.out.print(arrayRes[i]);
-            System.out.println();
-        }
-        System.out.println("char:\n");
-        for (int i = 0; i < M.colEff-1; i++)
-        {
-            System.out.print(arrayChar[i]);
-            System.out.println();
-        }
-        System.out.println("str:\n");
-        for (int i = 0; i < M.colEff-1; i++)
-        {
-            System.out.print(arrayString[i]);
-            System.out.println();
-        }
-        System.out.println("Matriks Hasil: ");
-        M.writeMatrix();
 
+        Matrix print = op.copyMatrix(temp);
+
+        if (M.rowEff != temp.rowEff)
+        {
+            int nRow0 = temp.rowEff - M.rowEff;
+
+            for (int i = 0; i < temp.rowEff - nRow0; i++)
+            {
+                for (int j = 0; j < temp.colEff; j++)
+                {
+                    print.matrix[i][j] = M.matrix[i][j];
+                }
+            }
+            for (int i = temp.rowEff - nRow0; i < temp.rowEff; i++)
+            {
+                for (int j = 0; j < temp.colEff; j++)
+                {
+                    print.matrix[i][j] = 0;
+                }
+            }
+        }
+
+        System.out.println("Matriks Hasil: ");
+        print.writeMatrix();
         System.out.println();
+        System.out.println("Solusi SPL: ");
+        
         if (trivial) 
         {
             for(int i = 0; i < M.colEff-1; i++)
@@ -1038,37 +1485,37 @@ public class SPL
                 }
                 if (realzerp && (arrayString[i] == ""))
                 {
-                    System.out.print(arrayRes[i]);
+                    System.out.print(new BigDecimal(arrayRes[i]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros().toString() + "");
                 }
             }
             else 
             {
-                System.out.print(arrayRes[i]);
+                System.out.print(new BigDecimal(arrayRes[i]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros().toString() + "");
             }
             System.out.print(arrayString[i]);
             System.out.print(", \n");
         }
     }
-
     
     // Prosedur untuk menulis file solusi banyak dari persamaan gauss
-    public void solusiBanyakFile(Matrix M, String filename)
+    public void solusiBanyakFile(Matrix M, Matrix temp, String filename)
     {
         boolean trivial, realzerp;
         double cache, arrayRes[] = new double[M.colEff-1];
         char var, arrayChar[] = new char[M.colEff-1];
         String arrayString[] = new String[M.colEff-1];
 
+        // Algoritma
         for (int i = 0; i < M.colEff-1; i++)
         {
             arrayRes[i] = 0;
         }
-        
+
         for (int i = 0; i < M.colEff-1; i++)
         {
             arrayChar[i] = '/';
         } 
-        
+
         for (int i = 0; i < M.colEff-1; i++)
         {
             arrayString[i] = "";
@@ -1077,28 +1524,29 @@ public class SPL
         var = 'S';
         M = removeRowAll0(M);
 
+        boolean first = true;
         for (int i = M.rowEff-1; i > -1; i--)
         {
-
             cache = M.matrix[i][M.colEff-1];
 
             for (int j = cariSatu(M, i) + 1; j < M.colEff-1; j++)
             {
-                if (arrayRes[j] == 0) 
-                {
+                if (arrayRes[j] == 0) {
                     realzerp = true;
-                    for (int k = j; k < M.colEff-1; k++)
+                    for(int k = j; k < M.colEff-1; k++)
                     {
-                        if (arrayChar[k] != '/'){
+                        if (arrayChar[k] != '/')
+                        {
                             realzerp = false;
                         }
                     }
 
                     if (j > 0)
                     {
-                        for(int k = j-1; k < -1; k--)
+                        for(int k = j-1; k > -1; k--)
                         {
-                            if (M.matrix[i][k] != 0){
+                            if (M.matrix[i][k] != 0)
+                            {
                                 realzerp = false;
                             }
                         }
@@ -1135,11 +1583,35 @@ public class SPL
                         
                         if (cacheConst > 0)
                         {
-                            arrayString[cariSatu(M, i)] += String.format("+%.2f%c", cacheConst, arrayChar[j]);
+                            if (cacheConst == 1)
+                            {
+                                arrayString[cariSatu(M, i)] += String.format("+%c", arrayChar[j]);
+                            }
+                            else
+                            {
+                                BigDecimal cacheRound = new BigDecimal(cacheConst).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
+                                if (first)
+                                {
+                                    arrayString[cariSatu(M, i)] += String.format("%s%c", cacheRound.toString(), arrayChar[j]);
+                                    first = false;
+                                }
+                                else
+                                {
+                                    arrayString[cariSatu(M, i)] += String.format("+%s%c", cacheRound.toString(), arrayChar[j]);
+                                }
+                            }
                         }
                         else if (cacheConst < 0) 
                         {
-                            arrayString[cariSatu(M, i)] += String.format("%.2f%c", cacheConst, arrayChar[j]);
+                            if (cacheConst == -1)
+                            {
+                                arrayString[cariSatu(M, i)] += String.format("-%c", arrayChar[j]);
+                            }
+                            else
+                            {
+                                BigDecimal cacheRound = new BigDecimal(cacheConst).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
+                                arrayString[cariSatu(M, i)] += String.format("%s%c", cacheRound.toString(), arrayChar[j]);
+                            }
                         }
                     }
                 }
@@ -1148,7 +1620,6 @@ public class SPL
                     cache -= arrayRes[j] * M.matrix[i][j];
                 }
             }
-
             try 
             {
                 arrayRes[cariSatu(M, i)] = cache;
@@ -1158,7 +1629,7 @@ public class SPL
 
             }
         }
-        
+
         trivial = true;
         for (int i = 0; i < M.colEff-1; i++)
         {
@@ -1168,21 +1639,166 @@ public class SPL
             }
         }
 
-        try 
-        {   
+        Matrix print = op.copyMatrix(temp);
+
+        if (M.rowEff != temp.rowEff)
+        {
+            int nRow0 = temp.rowEff - M.rowEff;
+
+            for (int i = 0; i < temp.rowEff - nRow0; i++)
+            {
+                for (int j = 0; j < temp.colEff; j++)
+                {
+                    print.matrix[i][j] = M.matrix[i][j];
+                }
+            }
+            for (int i = temp.rowEff - nRow0; i < temp.rowEff; i++)
+            {
+                for (int j = 0; j < temp.colEff; j++)
+                {
+                    print.matrix[i][j] = 0;
+                }
+            }
+        }
+
+        // Menuliskan matriks ke layar
+        int[] columnWidths = new int[temp.colEff];
+        int width = 0;
+
+        for (int col = 0; col < temp.colEff; col++) 
+        {
+            for (int row = 0; row < temp.rowEff; row++) 
+            {
+                BigDecimal bd = new BigDecimal(temp.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                width = (bd.toString()).length();
+                
+                if (width > columnWidths[col]) 
+                {
+                    columnWidths[col] = width;
+                }
+            }
+        }
+
+        try
+        {
             String userDirectory = System.getProperty("user.dir");
             BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            
+            writer.write("Matriks Augmented: ");
+            writer.newLine();
 
-            writer.write("Matriks Hasil:");
-            writer.newLine();
-            for (int i= 0; i<M.rowEff; i++)
+            // Pretty Print :)
+            for (int row = 0; row < temp.rowEff; row++)
             {
-                for (int j=0; j<M.colEff; j++)
+                if (temp.rowEff == 1)
                 {
-                    writer.write(M.matrix[i][j] + ((j == M.colEff-1) ? "" : " "));
+                    writer.write("[");
                 }
-            writer.newLine();
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == temp.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < temp.colEff; col++)
+                {
+                    BigDecimal bd = new BigDecimal(temp.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
+                }
+
+                if (temp.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == temp.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
             }
+            writer.newLine();
+
+            int[] columnInvWidths = new int[print.colEff];
+            width = 0;
+
+            for (int col = 0; col < print.colEff; col++) 
+            {
+                for (int row = 0; row < print.rowEff; row++) 
+                {
+                    BigDecimal bdi = new BigDecimal(print.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    width = (bdi.toString()).length();
+                    
+                    if (width > columnInvWidths[col]) 
+                    {
+                        columnInvWidths[col] = width;
+                    }
+                }
+            }
+
+            writer.write("Matriks Hasil: ");
+            writer.newLine();
+
+            // Pretty Print :)
+            for (int row = 0; row < print.rowEff; row++)
+            {
+                if (print.rowEff == 1)
+                {
+                    writer.write("[");
+                }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == print.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < print.colEff; col++) {
+                    BigDecimal bdi = new BigDecimal(print.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnInvWidths[col] + 2) + "s", bdi.toPlainString()));
+                }
+
+                if (print.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == print.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
+            }
+
+            writer.newLine();
+            writer.write("Solusi SPL: ");
             writer.newLine();
 
             if (trivial) 
@@ -1213,17 +1829,6 @@ public class SPL
                     {
                         realzerp = true;
                     }
-
-                    if (i > 0)
-                    {
-                        for(int j = i-1; j > -1; j--)
-                        {
-                            if (M.matrix[i][j] != 0)
-                            {
-                                realzerp = false;
-                            }
-                        }
-                    }
     
                     if (!realzerp)
                     {
@@ -1245,14 +1850,13 @@ public class SPL
 
                     if (realzerp && arrayString[i] == "")
                     {
-                        writer.write(arrayRes[i] + "");
+                        writer.write(new BigDecimal(arrayRes[i]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros().toString() + "");
                     }
                 }
-
                 
                 else 
                 {
-                    writer.write(arrayRes[i] + "");
+                    writer.write(new BigDecimal(arrayRes[i]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros().toString() + "");
                 }
                 writer.write(arrayString[i]);
                 writer.write((i == M.colEff-2) ? "\n" : ", \n");
@@ -1273,31 +1877,154 @@ public class SPL
     {   
         System.out.println("Matriks Hasil: ");
         M.writeMatrix();
-
         System.out.println();
-        System.out.println("Solusi tidak ada.");
+        System.out.println("Solusi SPL: ");
+        System.out.println("Tidak ada.");
     }
     
     // Prosedur untuk menulis file tidak ada solusi
-    public void solusiNoneFile(Matrix M, String filename)
+    public void solusiNoneFile(Matrix M, Matrix temp, String filename)
     {
-        try 
-        {   
+        // Menuliskan matriks ke layar
+        int[] columnWidths = new int[temp.colEff];
+        int width = 0;
+
+        for (int col = 0; col < temp.colEff; col++) 
+        {
+            for (int row = 0; row < temp.rowEff; row++) 
+            {
+                BigDecimal bd = new BigDecimal(temp.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                width = (bd.toString()).length();
+                
+                if (width > columnWidths[col]) 
+                {
+                    columnWidths[col] = width;
+                }
+            }
+        }
+
+        try
+        {
             String userDirectory = System.getProperty("user.dir");
             BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            
+            writer.write("Matriks Augmented: ");
+            writer.newLine();
 
-            writer.write("Matriks Hasil:");
-            writer.newLine();
-            for (int i= 0; i<M.rowEff; i++)
+            // Pretty Print :)
+            for (int row = 0; row < temp.rowEff; row++)
             {
-                for (int j=0; j<M.colEff; j++)
+                if (temp.rowEff == 1)
                 {
-                    writer.write(M.matrix[i][j] + ((j == M.colEff-1) ? "" : " "));
+                    writer.write("[");
                 }
-            writer.newLine();
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == temp.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < temp.colEff; col++)
+                {
+                    BigDecimal bd = new BigDecimal(temp.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
+                }
+
+                if (temp.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == temp.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
             }
             writer.newLine();
-            writer.write("Solusi tidak ada.");
+
+            int[] columnInvWidths = new int[M.colEff];
+            width = 0;
+
+            for (int col = 0; col < M.colEff; col++) 
+            {
+                for (int row = 0; row < M.rowEff; row++) 
+                {
+                    BigDecimal bdi = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    width = (bdi.toString()).length();
+                    
+                    if (width > columnInvWidths[col]) 
+                    {
+                        columnInvWidths[col] = width;
+                    }
+                }
+            }
+
+            writer.write("Matriks Hasil: ");
+            writer.newLine();
+
+            // Pretty M :)
+            for (int row = 0; row < M.rowEff; row++)
+            {
+                if (M.rowEff == 1)
+                {
+                    writer.write("[");
+                }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < M.colEff; col++) {
+                    BigDecimal bdi = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnInvWidths[col] + 2) + "s", bdi.toPlainString()));
+                }
+
+                if (M.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
+            }
+
+            writer.newLine();
+            writer.write("Solusi SPL: ");
+            writer.newLine();
+            writer.write("Tidak ada");
             writer.newLine();
             writer.flush();
             writer.close();
