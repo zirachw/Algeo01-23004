@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
@@ -186,17 +185,15 @@ public class ImageResizing {
             while (true) {
                 System.out.println("Masukkan nilai x (dalam rentang 0.5 dan 2, inklusif): ");
                 try {
-                    x = in.nextDouble();
+                    x = Double.parseDouble(in.nextLine());
                     // Bersihkan buffer setelah membaca double
-                    in.nextLine();  // Mengabaikan karakter newline yang tersisa
                     if (x >= 0.5 && x <= 2) {
                         break; // Keluar dari loop jika input valid
                     } else {
                         System.out.println("Faktor pengali x harus dalam rentang 0.5 dan 2, inklusif.");
                     }
-                } catch (InputMismatchException e) {
+                } catch (NumberFormatException e) {
                     System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
-                    in.nextLine(); // Mengabaikan input yang tidak valid
                 }
             }
     
@@ -204,17 +201,15 @@ public class ImageResizing {
             while (true) {
                 System.out.println("Masukkan nilai y (dalam rentang 0.5 dan 2, inklusif): ");
                 try {
-                    y = in.nextDouble();
+                    y = Double.parseDouble(in.nextLine());
                     // Bersihkan buffer setelah membaca double
-                    in.nextLine();  // Mengabaikan karakter newline yang tersisa
                     if (y >= 0.5 && y <= 2) {
                         break; // Keluar dari loop jika input valid
                     } else {
                         System.out.println("Nilai y harus dalam rentang 0.5 dan 2, inklusif.");
                     }
-                } catch (InputMismatchException e) {
+                } catch (NumberFormatException e) {
                     System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
-                    in.nextLine(); // Mengabaikan input yang tidak valid
                 }
             }
 
@@ -314,7 +309,6 @@ public class ImageResizing {
             String imgDirectory = System.getProperty("user.dir") + "/test/img/";
             File output = new File(imgDirectory+proccesedImg + ".jpg");
             ImageIO.write(outputImg, "png",output);
-            in.close();
         } 
         catch (IOException e) 
         {

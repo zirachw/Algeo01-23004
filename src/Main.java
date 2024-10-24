@@ -303,6 +303,8 @@ public class Main {
                 case 7:
                 System.out.print("\033[H\033[2J");
                 Image();
+                System.out.println("\nKembali ke menu utama...");
+                break;
 
                 case 8:
                 System.out.print("Sampai Jumpa!");
@@ -1970,6 +1972,15 @@ public class Main {
         String sourceImg = in.nextLine();
         String imgDirectory = System.getProperty("user.dir") + "/test/img/";
         File imgFile = new File(imgDirectory + sourceImg);
+
+        while(!imgFile.exists())
+        {
+            System.out.println("File tidak ditemukan! Silahkan input kembali.");
+            System.out.print("Nama file (dengan extensionnya. Misal: .jpg) >> ");
+            sourceImg = in.nextLine();
+            imgFile = new File(imgDirectory + sourceImg);
+        }
+
         ir.imageProccesing(imgFile);
     }
 }
