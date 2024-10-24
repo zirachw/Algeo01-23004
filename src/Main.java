@@ -39,7 +39,7 @@ public class Main {
             System.out.println("| 3 | Matriks Balikan                  |");
             System.out.println("| 4 | Interpolasi Polinom              |");
             System.out.println("| 5 | Interpolasi Bicubic Spline       |");
-            System.out.println("| 6 | Regresi Linear Berganda          |");
+            System.out.println("| 6 | Regresi Berganda                 |");
             System.out.println("| 7 | Image Resizing                   |");
             System.out.println("| 8 | Keluar                           |");
             System.out.println("========================================");
@@ -1517,6 +1517,7 @@ public class Main {
         String line;
         String[] row;
         int input;
+        double xint = 0;
         Matrix M = new Matrix();
 
         System.out.println("========================================");
@@ -1559,23 +1560,18 @@ public class Main {
             filepath = userDirectory + "/test/case/" + filename + ".txt";
 
             M.importMatrixWithEmpty(filepath, 1);
-            M.writeMatrix();
+            xint = inter.takeXValueFile(M);
             break;
 
             case 2:
             M = inter.localInput();
+            xint = inter.takeXValue(M);
             break;
         }
 
         if (!(M.rowEff == 0 || M.colEff == 0)) {
-            M.writeMatrix();
             Matrix x = inter.takeX(M);
             Matrix fx = inter.takeFx(M);
-            x.writeMatrix();
-            fx.writeMatrix();
-            // Mendapatkan nilai x yang akan diinterpolasi
-            double xInterpolasi = inter.takeXValue(M);
-
             // Membangun matriks xi berdasarkan nilai x
             Matrix xi = inter.xi(x);
 
@@ -1583,13 +1579,13 @@ public class Main {
             Matrix cf = inter.calculateCoeff(xi, fx);
 
             // Menghitung f(x) pada titik yang diinterpolasi
-            double hasilInterpolasi = inter.calculateFx(cf, xInterpolasi);
+            double hasilInterpolasi = inter.calculateFx(cf, xint);
             // Menampilkan polinom yang terbentuk
             String polinom = inter.showPolynom(cf);
             System.out.println(polinom);
 
             // Menampilkan hasil interpolasi
-            System.out.println("Nilai f(" + xInterpolasi + ") = " + hasilInterpolasi);
+            System.out.println("Nilai f(" + xint + ") = " + hasilInterpolasi);
         
             System.out.println("\nSimpan dalam bentuk file?");
             System.out.println("1. Ya");
