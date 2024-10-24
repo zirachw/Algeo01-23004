@@ -7,10 +7,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 
-public class imageResizing {
-    bicubicInterpolation bi = new bicubicInterpolation();
+public class ImageResizing {
+    BicubicInterpolation bi = new BicubicInterpolation();
     Determinant det = new Determinant();
     Inverse inverse = new Inverse();
     Operation op = new Operation();
@@ -165,20 +167,57 @@ public class imageResizing {
         return Math.min(255, Math.max(0, value));
     }
 
-    public void imageProccesing(double scaleX, double scaleY, String sourceImg, String proccesedImg)
+    public void imageProccesing(File imgFile)
     {
+        Scanner in = new Scanner(System.in);
         BufferedImage inputImg = null;
         BufferedImage curImg = null;
         BufferedImage outputImg = null;
-        String imgDirectory = System.getProperty("user.dir") + "/test/img/";
-        File imgFile = new File(imgDirectory + sourceImg);
-        
+
         try
         {
             inputImg = ImageIO.read(imgFile);
             int height = inputImg.getHeight();
             int width = inputImg.getWidth();
-            // System.out.println("Original Image Dimension: "+width+"x"+height);
+
+            System.out.print("Masukkan faktor pengali x: \n");
+            double x, y;
+    
+            while (true) {
+                System.out.println("Masukkan nilai x (dalam rentang 0.5 dan 2, inklusif): ");
+                try {
+                    x = in.nextDouble();
+                    // Bersihkan buffer setelah membaca double
+                    in.nextLine();  // Mengabaikan karakter newline yang tersisa
+                    if (x >= 0.5 && x <= 2) {
+                        break; // Keluar dari loop jika input valid
+                    } else {
+                        System.out.println("Faktor pengali x harus dalam rentang 0.5 dan 2, inklusif.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
+                    in.nextLine(); // Mengabaikan input yang tidak valid
+                }
+            }
+    
+            // Input nilai b
+            while (true) {
+                System.out.println("Masukkan nilai y (dalam rentang 0.5 dan 2, inklusif): ");
+                try {
+                    y = in.nextDouble();
+                    // Bersihkan buffer setelah membaca double
+                    in.nextLine();  // Mengabaikan karakter newline yang tersisa
+                    if (y >= 0.5 && y <= 2) {
+                        break; // Keluar dari loop jika input valid
+                    } else {
+                        System.out.println("Nilai y harus dalam rentang 0.5 dan 2, inklusif.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
+                    in.nextLine(); // Mengabaikan input yang tidak valid
+                }
+            }
+
             curImg = new BufferedImage(width+4, height+4, BufferedImage.TYPE_INT_RGB);
 
             for (int i = 0; i < width; i++){
@@ -219,10 +258,9 @@ public class imageResizing {
                 curImg.setRGB(width+3, j, curImg.getRGB(width+1, j));
             }
 
-
             /*Hitung ukuran baru image*/
-            int newWidth = (int)(width*scaleX);
-            int newHeight = (int)(height*scaleY);
+            int newWidth = (int)(width*x);
+            int newHeight = (int)(height*y);
 
             Matrix[][] Aijused = new Matrix[height+1][4];
 
@@ -265,15 +303,21 @@ public class imageResizing {
                 }
             }
 
-
         }catch(IOException e){
             System.out.println("Error: "+e);
         }
 
-        try {
-            File output = new File(imgDirectory+proccesedImg);
+        try 
+        {
+            System.out.println("Masukkan nama file output (tanpa ekstensi): ");
+            String proccesedImg = in.nextLine();
+            String imgDirectory = System.getProperty("user.dir") + "/test/img/";
+            File output = new File(imgDirectory+proccesedImg + ".jpg");
             ImageIO.write(outputImg, "png",output);
-        } catch (IOException e) {
+            in.close();
+        } 
+        catch (IOException e) 
+        {
             System.out.println(e);
         }
     }

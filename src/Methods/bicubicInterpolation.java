@@ -11,7 +11,7 @@ import java.math.RoundingMode;
 
 import ADTMatrix.Matrix;
 
-public class bicubicInterpolation {
+public class BicubicInterpolation {
 
     public Scanner input = new Scanner(System.in);
 
