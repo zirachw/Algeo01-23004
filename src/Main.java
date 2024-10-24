@@ -1129,7 +1129,7 @@ public class Main {
             case 2:
             do
             {
-                System.out.print("\nMasukkan jumlah baris: ");
+                System.out.print("\nMasukkan jumlah baris (maksimal 5 untuk Kofaktor): ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
@@ -1145,11 +1145,11 @@ public class Main {
                     System.out.println("Input tidak valid! Silahkan input dengan benar.");
                 } 
             } 
-            while (baris <= 0);
+            while (baris <= 0 || baris > 5);
 
             do
             {
-                System.out.print("Masukkan jumlah kolom: ");
+                System.out.print("Masukkan jumlah kolom (maksimal 5 untuk Kofaktor): ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
@@ -1166,7 +1166,7 @@ public class Main {
                     System.out.println("Input tidak valid! Silahkan input dengan benar.");
                 } 
             } 
-            while (kolom <= 0);
+            while (kolom <= 0 || kolom > 5);
     
             System.out.print("Masukkan nilai-nilai dari matriks per baris. Contoh jika 3x3: 1 0 1 \n");
             M.readMatrix(baris, kolom);
@@ -1319,11 +1319,11 @@ public class Main {
         {
             if (M.rowEff != M.colEff)
             {
-                System.out.println("Matriks tidak memiliki invers karena bukan matriks persegi.");
+                System.out.println("\nMatriks tidak memiliki invers karena bukan matriks persegi.");
             }
             else if (det.determinantOBE(M) == 0)
             {
-                System.out.println("Matriks tidak memiliki invers karena determinan bernilai 0.");
+                System.out.println("\nMatriks tidak memiliki invers karena determinan bernilai 0.");
             }
             else
             {
@@ -1332,8 +1332,7 @@ public class Main {
                 inverse.writeMatrix();
             }
             
-            System.out.println();
-            System.out.println("Simpan dalam bentuk file?");
+            System.out.println("\nSimpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
 
@@ -1425,7 +1424,7 @@ public class Main {
             case 2:
             do
             {
-                System.out.print("\nMasukkan dimensi matriks: ");
+                System.out.print("\nMasukkan dimensi matriks (maksimal 5 untuk Adjoint): ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
@@ -1442,7 +1441,7 @@ public class Main {
                     System.out.println("Input tidak valid! Silahkan input dengan benar.");
                 } 
             } 
-            while (dimensi <= 0);
+            while (dimensi <= 0 || dimensi > 5);
     
             System.out.print("Masukkan nilai elemen pada matriks: \n");
             M.readMatrix(dimensi, dimensi);
@@ -1458,11 +1457,11 @@ public class Main {
         {
             if (M.rowEff != M.colEff)
             {
-                System.out.println("Matriks tidak memiliki invers karena bukan matriks persegi.");
+                System.out.println("\nMatriks tidak memiliki invers karena bukan matriks persegi.");
             }
             else if (det.determinantOBE(M) == 0)
             {
-                System.out.println("Matriks tidak memiliki invers karena determinan bernilai 0.");
+                System.out.println("\nMatriks tidak memiliki invers karena determinan bernilai 0.");
             }
             else
             {
@@ -1471,10 +1470,10 @@ public class Main {
                 inverse.writeMatrix();
             }
         
-            System.out.println();
-            System.out.println("Simpan dalam bentuk file?");
+            System.out.println("\nSimpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
+
             do
             {
                 System.out.print(">> ");
@@ -1590,10 +1589,10 @@ public class Main {
             // Menampilkan hasil interpolasi
             System.out.println("Nilai f(" + xInterpolasi + ") = " + hasilInterpolasi);
         
-            /* Output file */
             System.out.println("\nSimpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
+
             do
             {
                 line = in.nextLine();
