@@ -44,8 +44,8 @@ In addition, the library is used in Java programs to solve various problems mode
 ## How-to-use
 
     git clone https://github.com/zirachw/Algeo01-23004
-    cd Algeo01-23004
-    java Main
+    cd Algeo01-23004/src
+    java -cp ../bin Main
 
 ## Structure
 
