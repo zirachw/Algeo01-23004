@@ -8,6 +8,7 @@ import ADTMatrix.Operation;
 // import java packages
 import java.lang.Math;
 import java.util.Scanner;
+import java.util.Locale;
 import java.io.*;
 
 public class PolynomialInterpolation {
@@ -24,21 +25,33 @@ public class PolynomialInterpolation {
         System.out.print("Masukkan derajat polinom untuk interpolasi (n): ");
         int n = Integer.parseInt(input.nextLine());
 
-        // Inisialisasi matriks untuk titik-titik dan nilai x yang akan diinterpolasi
-        Matrix inputMatrix = new Matrix(n + 2, 2);
+        Matrix inputMatrix = new Matrix(n+2, 2);
+        double a;
+        
+        System.out.print("Masukkan nilai x dan fx: \n");
+        inputMatrix.readMatrix(n+1, 2);
 
-        // Input nilai titik (x dan y)
-        for (int i = 0; i < n + 1; i++) {
-            System.out.print("Masukkan nilai x titik ke-" + i + ": ");
-            inputMatrix.matrix[i][0] = Double.parseDouble(input.nextLine());
-            System.out.print("Masukkan nilai y titik ke-" + i + ": ");
-            inputMatrix.matrix[i][1] = Double.parseDouble(input.nextLine());
+        double minima = minimumX(inputMatrix);
+        double maxima = maximumX(inputMatrix);
+
+        while (true) {
+            System.out.println(String.format(Locale.US, "Masukkan nilai a (dalam rentang %f dan %f, inklusif): ", minima, maxima));
+            try {
+                a = Double.parseDouble(input.nextLine());
+                // Bersihkan buffer setelah membaca double
+
+                if (a >= minima && a <= maxima) {
+                    break; // Keluar dari loop jika input valid
+                } else {
+                    System.out.println(String.format(Locale.US, "Nilai a harus dalam rentang %f dan %f inklusif.\n", minima, maxima));
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
+            }
         }
 
-        // Input nilai x yang akan diinterpolasi
-        System.out.print("Masukkan nilai x yang akan diinterpolasi: ");
-        inputMatrix.matrix[n + 1][0] = Double.parseDouble(input.nextLine());
-        inputMatrix.matrix[n + 1][1] = -999.0;  // MARK
+        inputMatrix.matrix[n+1][0] = a;
 
         return inputMatrix;
     }
@@ -52,6 +65,30 @@ public class PolynomialInterpolation {
             x.matrix[i][0] = M.matrix[i][0];
         }
         return x;
+    }
+
+    public double minimumX(Matrix M){
+        // Fungsi untuk mendapatkan nilai minimum dari x
+        double minima = M.matrix[0][0];
+
+        for (int i = 1; i < M.rowEff; i++) {
+            if (M.matrix[i][0] < minima){
+                minima = M.matrix[i][0];
+            }
+        }
+        return minima;
+    }
+
+    public double maximumX(Matrix M){
+        // Fungsi untuk mendapatkan nilai maksimum dari x
+        double maxima = M.matrix[0][0];
+
+        for (int i = 1; i < M.rowEff; i++) {
+            if (M.matrix[i][0] > maxima){
+                maxima = M.matrix[i][0];
+            }
+        }
+        return maxima;
     }
 
     public Matrix takeFx(Matrix M) {
@@ -68,7 +105,7 @@ public class PolynomialInterpolation {
 
         // Fungsi untuk mengambil nilai x yang akan dicari interpolasinya
 
-        return M.matrix[M.rowEff - 1][0];
+        return M.matrix[M.rowEff][0];
     }
 
     public Matrix xi(Matrix x) {

@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 // import java.util.*;
 import java.lang.Math;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,17 +25,16 @@ public class BicubicInterpolation {
         while (true) {
             System.out.println("Masukkan nilai a (dalam rentang 0 dan 1, inklusif): ");
             try {
-                a = input.nextDouble();
+                a = Double.parseDouble(input.nextLine());
                 // Bersihkan buffer setelah membaca double
-                input.nextLine();  // Mengabaikan karakter newline yang tersisa
+
                 if (a >= 0 && a <= 1) {
                     break; // Keluar dari loop jika input valid
                 } else {
                     System.out.println("Nilai a harus dalam rentang 0 dan 1, inklusif.");
                 }
-            } catch (InputMismatchException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
-                input.nextLine(); // Mengabaikan input yang tidak valid
             }
         }
 
@@ -44,17 +42,16 @@ public class BicubicInterpolation {
         while (true) {
             System.out.println("Masukkan nilai b (dalam rentang 0 dan 1, inklusif): ");
             try {
-                b = input.nextDouble();
+                b = Double.parseDouble(input.nextLine());
                 // Bersihkan buffer setelah membaca double
-                input.nextLine();  // Mengabaikan karakter newline yang tersisa
+
                 if (b >= 0 && b <= 1) {
                     break; // Keluar dari loop jika input valid
                 } else {
                     System.out.println("Nilai b harus dalam rentang 0 dan 1, inklusif.");
                 }
-            } catch (InputMismatchException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
-                input.nextLine(); // Mengabaikan input yang tidak valid
             }
         }
 
