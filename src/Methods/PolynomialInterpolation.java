@@ -209,8 +209,7 @@ public class PolynomialInterpolation {
         filename = input.nextLine() + ".txt";
 
         try {            
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
 
             Matrix x = takeX(M);
             Matrix fx = takeFx(M);

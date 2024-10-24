@@ -105,8 +105,7 @@ public class SPL
 
         try
         {
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             writer.write("Matriks Augmented: ");
             writer.newLine();
@@ -340,8 +339,7 @@ public class SPL
 
         try
         {
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             writer.write("Matriks Augmented: ");
             writer.newLine();
@@ -840,8 +838,7 @@ public class SPL
 
         try
         {
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             writer.write("Matriks Augmented: ");
             writer.newLine();
@@ -1085,8 +1082,7 @@ public class SPL
                 }
             }
 
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             writer.write("Matriks Augmented: ");
             writer.newLine();
@@ -1646,8 +1642,7 @@ public class SPL
 
         try
         {
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             writer.write("Matriks Augmented: ");
             writer.newLine();
@@ -1870,8 +1865,7 @@ public class SPL
 
         try
         {
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             writer.write("Matriks Augmented: ");
             writer.newLine();

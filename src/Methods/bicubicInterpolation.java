@@ -164,8 +164,7 @@ public class BicubicInterpolation {
 
         try
         {
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
 
             BigDecimal bd = new BigDecimal(Maij.matrix[0][0]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
             int width = (bd.toString()).length();

@@ -363,8 +363,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrix(filepath);
             break;
@@ -516,8 +516,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrix(filepath);
             break;
@@ -667,8 +667,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrix(filepath);
             break;
@@ -814,8 +814,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrix(filepath);
             break;
@@ -963,8 +963,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrix(filepath);
             break;
@@ -1122,8 +1122,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrix(filepath);
             break;
@@ -1279,8 +1279,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrix(filepath);
             break;
@@ -1417,8 +1417,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrix(filepath);
             break;
@@ -1556,8 +1556,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrixWithEmpty(filepath, 1);
             xint = inter.takeXValueFile(M);
@@ -1673,8 +1673,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrixWithEmpty(filepath, 1);
             break;
@@ -1778,8 +1778,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrixWithEmpty(filepath, 1);
             break;
@@ -1891,8 +1891,8 @@ public class Main {
             System.out.print("\nMengambil file dari folder test.");
             System.out.print("\nNama file: ");
 
-            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-            filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine();
+            filepath = "../test/case/" + filename + ".txt";
 
             M.importMatrixWithEmpty(filepath, 2);
             break;

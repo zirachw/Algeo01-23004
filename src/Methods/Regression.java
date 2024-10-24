@@ -176,8 +176,7 @@ public class Regression {
             String equation = generateLinearEquation(a);
             double fx = calcFxLinear(a, M);
 
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             // Write input data
             writer.write("Data Input:\n");
@@ -362,8 +361,7 @@ public class Regression {
         Matrix beta = QuadraticRegression(M);
 
         try {
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             writer.write("Persamaan regresi kuadratik: f(x):");
             writer.newLine();

@@ -1,0 +1,17 @@
+Matriks Augmented: 
+┌  0  1  0  0  1  0   2  ┐
+|  0  0  0  1  1  0  -1  |
+└  0  1  0  0  0  1   1  ┘
+
+Matriks Hasil: 
+┌  0  1  0  0  1  0   2  ┐
+|  0  0  0  1  1  0  -1  |
+└  0  1  0  0  0  1   1  ┘
+
+Solusi SPL: 
+x1 = U, 
+x2 = 1-S, 
+x3 = T, 
+x4 = -2-S, 
+x5 = 1+S, 
+x6 = S

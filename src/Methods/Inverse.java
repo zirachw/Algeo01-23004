@@ -168,8 +168,7 @@ public class Inverse {
 
         try
         {
-            String userDirectory = System.getProperty("user.dir");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/result/" + filename));
             
             writer.write("Matriks Awal: ");
             writer.newLine();

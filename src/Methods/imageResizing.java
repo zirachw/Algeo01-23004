@@ -306,9 +306,8 @@ public class ImageResizing {
         {
             System.out.println("Masukkan nama file output (tanpa ekstensi): ");
             String proccesedImg = in.nextLine();
-            String imgDirectory = System.getProperty("user.dir") + "/test/img/";
-            File output = new File(imgDirectory+proccesedImg + ".jpg");
-            ImageIO.write(outputImg, "png",output);
+            File output = new File("../test/img/"+proccesedImg + ".jpg");
+            ImageIO.write(outputImg, "jpg",output);
         } 
         catch (IOException e) 
         {
