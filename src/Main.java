@@ -8,18 +8,18 @@ import java.io.File;
 
 public class Main {
 
-    Scanner in = new Scanner (System.in);
-    SPL spl = new SPL();
-    Inverse inv = new Inverse();
-    Operation op = new Operation();
-    Determinant det = new Determinant();
-    Regression reg = new Regression();
-    ImageResizing ir = new ImageResizing();
-    BicubicInterpolation bi = new BicubicInterpolation();
-    PolynomialInterpolation inter = new PolynomialInterpolation();
+    static Scanner in = new Scanner (System.in);
+    static SPL spl = new SPL();
+    static Inverse inv = new Inverse();
+    static Operation op = new Operation();
+    static Determinant det = new Determinant();
+    static Regression reg = new Regression();
+    static ImageResizing ir = new ImageResizing();
+    static BicubicInterpolation bi = new BicubicInterpolation();
+    static PolynomialInterpolation inter = new PolynomialInterpolation();
 
     /* MAIN PROGRAM */
-    public void main(String[] args) 
+    public static void main(String[] args) 
     {
         boolean run = true;
         int input = 0;
@@ -319,7 +319,7 @@ public class Main {
 
     /* FUNGSI ANTARA */
     // Fungsi antara untuk memanggil SPL Gauss
-    public void SPLGauss()
+    public static void SPLGauss()
     {
         String line;
         String[] row;
@@ -473,7 +473,7 @@ public class Main {
     }
 
     // Fungsi antara untuk memanggil SPL Gauss Jordan
-    public void SPLGaussJordan()
+    public static void SPLGaussJordan()
     {
         String line;
         String[] row;
@@ -623,7 +623,7 @@ public class Main {
     }
 
     // Fungsi antara untuk memanggil SPL Inverse
-    public void SPLInverse()
+    public static void SPLInverse()
     {
         String line;
         String[] row;
@@ -771,7 +771,7 @@ public class Main {
     }
 
     // Fungsi antara untuk memanggil SPL Cramer
-    public void SPLCramer()
+    public static void SPLCramer()
     {
         String line;
         String[] row;
@@ -918,7 +918,7 @@ public class Main {
     }
     
     // Fungsi antara untuk memanggil Determinan metode OBE
-    public void DeterminanOBE()
+    public static void DeterminanOBE()
     {
         String line;
         String[] row;
@@ -1077,7 +1077,7 @@ public class Main {
     }
 
     // Fungsi antara untuk memanggil Determinan metode ekspansi kofaktor
-    public void DeterminanKofaktor()
+    public static void DeterminanKofaktor()
     {
         String line;
         String[] row;
@@ -1236,7 +1236,7 @@ public class Main {
     }
     
     // Fungsi antara untuk memanggil Matriks Balikan metode inverse identitas
-    public void InverseIdentitas()
+    public static void InverseIdentitas()
     {
         String line;
         String[] row;
@@ -1374,7 +1374,7 @@ public class Main {
     }
 
     // Fungsi antara untuk memanggil Matriks Balikan metode inverse adjoint
-    public void InverseAdjoint()
+    public static void InverseAdjoint()
     {
         String line;
         String[] row;
@@ -1512,7 +1512,7 @@ public class Main {
     }
 
     // Fungsi antara untuk memanggil Interpolasi Polinom
-    public void InterpolasiPolinom()
+    public static void InterpolasiPolinom()
     {
         String line;
         String[] row;
@@ -1630,7 +1630,7 @@ public class Main {
     }
 
     // Fungsi antara untuk memanggil Regresi Linear Berganda
-    public void RegresiLinear()
+    public static void RegresiLinear()
     {
         Matrix M = new Matrix();
         int input;
@@ -1739,7 +1739,7 @@ public class Main {
 
 
     // Fungsi antara untuk memanggil Regresi Linear Berganda
-    public void RegresiKuadratik()
+    public static void RegresiKuadratik()
     {
         Matrix M = new Matrix();
         int input;
@@ -1848,7 +1848,7 @@ public class Main {
     }
 
     // Fungsi antara untuk memanggil Bicubic Interpolation
-    public void BicubicInterpolation()
+    public static void BicubicInterpolation()
     {
         Matrix M = new Matrix();
         int input;
@@ -1959,7 +1959,7 @@ public class Main {
         }
     }
 
-    public void Image()
+    public static void Image()
     {
         /* Menerima masukan dari file */
         System.out.print("\nMengambil file dari folder test.");
