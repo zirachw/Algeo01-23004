@@ -120,7 +120,7 @@ public class PolynomialInterpolation {
         String fx = new String("f(x) = ");
         boolean first = true;
 
-        for (int i = 0; i <= f.rowEff - 1; i++) {
+        for (int i = 0; i < f.rowEff; i++) {
             double coeff = f.matrix[i][0];
 
             if (coeff != 0) {
@@ -164,8 +164,9 @@ public class PolynomialInterpolation {
         System.out.print("\nMasukkan nama file: ");
         filename = input.nextLine() + ".txt";
 
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("../test/" + filename));
+        try {            
+            String userDirectory = System.getProperty("user.dir");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
 
             Matrix x = takeX(M);
             Matrix fx = takeFx(M);
@@ -184,7 +185,7 @@ public class PolynomialInterpolation {
             writer.write("f(x) = ");
             boolean first = true;
 
-            for (int i = cf.rowEff - 1; i >= 0; i--) {
+            for (int i = 0; i < cf.rowEff; i++) {
                 double coeff = cf.matrix[i][0];
 
                 if (coeff != 0) {
@@ -207,8 +208,7 @@ public class PolynomialInterpolation {
                         if (i == 1) {
                             writer.write("x");
                         } else {
-                            writer.write("x^");
-                            writer.write(i);
+                            writer.write("x^" + (i));
                         }
                     }
                 }
