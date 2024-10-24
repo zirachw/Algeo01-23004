@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Locale;
 
 /* Definisi Kelas Matrix */
 public class Matrix 
@@ -213,12 +214,14 @@ public class Matrix
         try
         {
             Scanner fileReader = new Scanner(file);
+            fileReader.useLocale(Locale.US);
             int nElmt = 0;
 
             while(fileReader.hasNextLine())
             {
                 this.rowEff++;
                 Scanner rowReader = new Scanner(fileReader.nextLine());
+                rowReader.useLocale(Locale.US);
 
                 while(rowReader.hasNextDouble())
                 {
@@ -232,6 +235,7 @@ public class Matrix
             this.colEff = (nElmt + nEmpty) / this.rowEff;
 
             fileReader = new Scanner(file);
+            fileReader.useLocale(Locale.US);
             for (int row = 0; row < this.rowEff; row++)
             {
                 for (int col = 0; col < this.colEff; col++)
