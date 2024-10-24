@@ -1,6 +1,13 @@
 // Package set-up
 package Methods;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Scanner;
+
 // import from packages
 import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
@@ -10,6 +17,7 @@ public class Inverse {
     // Selektor
     Operation op = new Operation();
     Determinant det = new Determinant();
+    Scanner input = new Scanner(System.in);
 
     public boolean isZeroRow(double[] row) {
         // Mengecek baris dengan elemen bernilai semua 0
@@ -131,5 +139,167 @@ public class Inverse {
         Matrix res = op.multiplyMatrixByScalar(getAdj(M), 1 / det.determinantCofactor(M));
         op.errorRounding(res);
         return res;
+    }
+
+    public void exportInverse(Matrix M, Matrix inverse)
+    {
+        // Menulis matriks ke file
+        String filename;
+        System.out.print("Masukkan nama file: ");
+        filename = input.nextLine() + ".txt";
+
+        // Menuliskan matriks ke layar
+        int[] columnWidths = new int[M.colEff];
+        int width = 0;
+
+        for (int col = 0; col < M.colEff; col++) 
+        {
+            for (int row = 0; row < M.rowEff; row++) 
+            {
+                BigDecimal bd = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                width = (bd.toString()).length();
+                
+                if (width > columnWidths[col]) 
+                {
+                    columnWidths[col] = width;
+                }
+            }
+        }
+
+        try
+        {
+            String userDirectory = System.getProperty("user.dir");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            
+            writer.write("Matriks Awal: ");
+            writer.newLine();
+
+            // Pretty Print :)
+            for (int row = 0; row < M.rowEff; row++)
+            {
+                if (M.rowEff == 1)
+                {
+                    writer.write("[");
+                }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                for (int col = 0; col < M.colEff; col++)
+                {
+                    BigDecimal bd = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                    writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
+                }
+
+                if (M.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == M.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
+            }
+            writer.newLine();
+
+            if (M.rowEff != M.colEff)
+            {
+                writer.write("Matriks tidak memiliki invers karena bukan matriks persegi.");
+            }
+            else if (det.determinantOBE(M) == 0)
+            {
+                writer.write("Matriks tidak memiliki invers karena determinan bernilai 0.");
+            }
+            else
+            {
+                int[] columnInvWidths = new int[inverse.colEff];
+                width = 0;
+
+                for (int col = 0; col < inverse.colEff; col++) 
+                {
+                    for (int row = 0; row < inverse.rowEff; row++) 
+                    {
+                        BigDecimal bdi = new BigDecimal(inverse.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                        width = (bdi.toString()).length();
+                        
+                        if (width > columnInvWidths[col]) 
+                        {
+                            columnInvWidths[col] = width;
+                        }
+                    }
+                }
+
+                writer.write("Matriks Invers-nya: ");
+                writer.newLine();
+    
+                // Pretty Print :)
+                for (int row = 0; row < inverse.rowEff; row++)
+                {
+                    if (inverse.rowEff == 1)
+                    {
+                        writer.write("[");
+                    }
+                    else if (row == 0)
+                    {
+                        writer.write("┌");
+                    }
+                    else if (row == inverse.rowEff - 1)
+                    {
+                        writer.write("└");
+                    }
+                    else
+                    {
+                        writer.write("|");
+                    }
+    
+                    for (int col = 0; col < inverse.colEff; col++) {
+                        BigDecimal bdi = new BigDecimal(inverse.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                        writer.write(String.format("%" + (columnInvWidths[col] + 2) + "s", bdi.toPlainString()));
+                    }
+    
+                    if (inverse.rowEff == 1)
+                    {
+                        writer.write("  ]");
+                    }
+                    else if (row == 0)
+                    {
+                        writer.write("  ┐");
+                    }
+                    else if (row == inverse.rowEff - 1)
+                    {
+                        writer.write("  ┘");
+                    }
+                    else
+                    {
+                        writer.write("  |");
+                    }
+                    writer.newLine();
+                }
+            }
+            writer.close();
+        }
+
+        catch (IOException e)
+        {
+            System.out.println("Terjadi kesalahan saat menulis file.");
+        }
     }
 }
