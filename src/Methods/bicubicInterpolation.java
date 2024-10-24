@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 // import java.util.*;
 import java.lang.Math;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,6 +14,52 @@ import ADTMatrix.Matrix;
 public class bicubicInterpolation {
 
     public Scanner input = new Scanner(System.in);
+
+    public Matrix inputBicubic() 
+    {
+        Matrix M = new Matrix(5, 4);
+        double a, b;
+        
+        System.out.print("Masukkan nilai elemen pada matriks 4x4: \n");
+        M.readMatrix(4, 4);
+
+        while (true) {
+            System.out.println("Masukkan nilai a (dalam rentang 0 dan 1, inklusif): ");
+            try {
+                a = input.nextDouble();
+                // Bersihkan buffer setelah membaca double
+                input.nextLine();  // Mengabaikan karakter newline yang tersisa
+                if (a >= 0 && a <= 1) {
+                    break; // Keluar dari loop jika input valid
+                } else {
+                    System.out.println("Nilai a harus dalam rentang 0 dan 1, inklusif.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
+                input.nextLine(); // Mengabaikan input yang tidak valid
+            }
+        }
+
+        // Input nilai b
+        while (true) {
+            System.out.println("Masukkan nilai b (dalam rentang 0 dan 1, inklusif): ");
+            try {
+                b = input.nextDouble();
+                // Bersihkan buffer setelah membaca double
+                input.nextLine();  // Mengabaikan karakter newline yang tersisa
+                if (b >= 0 && b <= 1) {
+                    break; // Keluar dari loop jika input valid
+                } else {
+                    System.out.println("Nilai b harus dalam rentang 0 dan 1, inklusif.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Input tidak valid. Silakan masukkan angka desimal.");
+                input.nextLine(); // Mengabaikan input yang tidak valid
+            }
+        }
+
+        return M;
+    }
 
     // FUngsi untuk mengambil nilai a
     public double getA(Matrix M){
@@ -93,9 +140,7 @@ public class bicubicInterpolation {
     {
         Inverse inverse = new Inverse();
         Matrix temp = getMatrixX();
-        // temp.writeMatrix();
         Matrix inverted = inverse.inverseGJ(temp);
-        // inverted.writeMatrix(); 
 
         return multiplyMatrixBik(inverted, m16x1);
     }

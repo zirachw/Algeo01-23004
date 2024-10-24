@@ -1775,25 +1775,59 @@ public class Main {
     // Fungsi antara untuk memanggil Bicubic Interpolation
     public void BicubicInterpolation()
     {
-        String line;
-        String[] row;
-
-        System.out.println("\nBICUBIC INTERPOLATION");
-
-        int input; 
         Matrix M = new Matrix();
+        int input;
+        String mark;
+        String[] baris;
+
+        System.out.println("\nPilih metode masukan:");
+        System.out.println("1. File");
+        System.out.println("2. Keyboard");
+        System.out.println("\n3. Kembali Ke Menu");
+
+        do
+        {
+            System.out.print(">>");
+            mark = in.nextLine();
+            baris = mark.split(" ");
+            try 
+            {
+                input = Integer.parseInt(baris[0]);
+            } 
+            catch (NumberFormatException e) 
+            {
+                input = 0;
+            }
+
+            if (input <= 0 || input > 3) 
+            {
+                System.out.println("Pilihan Anda tidak valid, Silahkan Ulangi!");
+            } 
+        } 
+        while (input <= 0 || input > 3);
     
-        /* Menerima masukan dari file */
-        System.out.print("\nMengambil file dari folder test.");
-        System.out.print("\nNama file: ");
+        switch (input) 
+        {
+            case 1:
+            System.out.print("\nMengambil file dari folder test.");
+            System.out.print("\nNama file: ");
 
-        String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-        filepath = userDirectory + "/test/case/" + filename + ".txt";
+            String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
+            filepath = userDirectory + "/test/case/" + filename + ".txt";
 
-        M.importMatrixWithEmpty(filepath, 2);
+            M.importMatrixWithEmpty(filepath, 2);
+            break;
+
+            case 2:
+            M = bi.inputBicubic();
+            break;
+
+            case 3:
+            break;
+        }
 
         /* Proses */
-        if (!(M.rowEff == 0 || M.colEff == 0)) {
+        if (M.rowEff == 5 || M.colEff == 4) {
             Matrix matrixF = bi.getMatrixF(M);
             double a = bi.getA(M); 
             double b = bi.getB(M); 
@@ -1808,14 +1842,15 @@ public class Main {
             System.out.println("\nSimpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
+            
             do
             {
                 System.out.print(">>");
-                line = in.nextLine();
-                row = line.split(" ");
+                mark = in.nextLine();
+                baris = mark.split(" ");
                 try 
                 {
-                    input = Integer.parseInt(row[0]);
+                    input = Integer.parseInt(baris[0]);
                 } 
                 catch (NumberFormatException e) 
                 {
@@ -1832,7 +1867,6 @@ public class Main {
             switch (input)
             {
                 case 1:
-                Ma_ij.writeMatrix();
                 bi.exportBicubic(Ma_ij, a, b);
         
                 case 2:
