@@ -5,12 +5,24 @@ import java.io.FileWriter;
 // import java.util.*;
 import java.lang.Math;
 import java.util.Scanner;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import ADTMatrix.Matrix;
 
 public class bicubicInterpolation {
 
     public Scanner input = new Scanner(System.in);
+
+    // FUngsi untuk mengambil nilai a
+    public double getA(Matrix M){
+        return M.matrix[4][0];
+    }
+
+    // Fungsi untuk mengambil nilai b
+    public double getB(Matrix M){
+        return M.matrix[4][1];
+    }
 
     public Matrix getMatrixX() 
     {
@@ -110,7 +122,71 @@ public class bicubicInterpolation {
 
         try
         {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("./test/" + filename));
+            String userDirectory = System.getProperty("user.dir");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+
+            BigDecimal bd = new BigDecimal(Maij.matrix[0][0]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
+            int width = (bd.toString()).length();
+            int[] columnWidths = new int[Maij.colEff];
+
+            for (int row = 1; row < Maij.rowEff; row++) 
+            {
+                bd = new BigDecimal(Maij.matrix[row][0]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
+                width = (bd.toString()).length();
+                
+                if (width > columnWidths[0]) 
+                {
+                    columnWidths[0] = width;
+                }
+            }
+            width = (bd.toString()).length();
+
+            writer.write("Hasil Matriks A: ");
+            writer.newLine();
+
+            // Pretty Print :)
+            for (int row = 0; row < Maij.rowEff; row++)
+            {
+                if (Maij.rowEff == 1)
+                {
+                    writer.write("[");
+                }
+                else if (row == 0)
+                {
+                    writer.write("┌");
+                }
+                else if (row == Maij.rowEff - 1)
+                {
+                    writer.write("└");
+                }
+                else
+                {
+                    writer.write("|");
+                }
+
+                bd = new BigDecimal(Maij.matrix[row][0]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
+                writer.write(String.format("%" + (width + 2) + "s", bd.toPlainString()));
+
+                if (Maij.rowEff == 1)
+                {
+                    writer.write("  ]");
+                }
+                else if (row == 0)
+                {
+                    writer.write("  ┐");
+                }
+                else if (row == Maij.rowEff - 1)
+                {
+                    writer.write("  ┘");
+                }
+                else
+                {
+                    writer.write("  |");
+                }
+                writer.newLine();
+            }
+            writer.newLine();
+
             writer.write("Hasil dari f(" +String.valueOf(a)+","+ String.valueOf(b)+ "): " +String.valueOf(result));
             writer.close();
         }
