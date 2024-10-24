@@ -13,6 +13,7 @@ public class Main {
     Operation op = new Operation();
     Determinant det = new Determinant();
     Regression reg = new Regression();
+    bicubicInterpolation bi = new bicubicInterpolation();
     PolynomialInterpolation inter = new PolynomialInterpolation();
 
     /* MAIN PROGRAM */
@@ -387,11 +388,11 @@ public class Main {
             case 3:
             break;
         }
-
+        Matrix temp = op.copyMatrix(M);
         if (M.rowEff > 0 && M.colEff > 0)
         {
             M = spl.gauss(M);
-            spl.gaussSPL(M);
+            spl.gaussSPL(M, temp);
 
             System.out.println();
             System.out.println("Simpan dalam bentuk file?");
@@ -423,7 +424,7 @@ public class Main {
             switch (input)
             {
                 case 1:
-                spl.gaussSPLFile(M);
+                spl.gaussSPLFile(M, temp);
                 break;
                 
                 case 2:
@@ -534,11 +535,11 @@ public class Main {
             case 3:
             break;
         }
-
+        Matrix temp = op.copyMatrix(M);
         if (M.rowEff > 0 && M.colEff > 0)
         {
             M = spl.gaussJordan(M);
-            spl.gaussSPL(M);
+            spl.gaussSPL(M, temp);
 
             System.out.println();
             System.out.println("Simpan dalam bentuk file?");
@@ -568,7 +569,7 @@ public class Main {
             switch (input)
             {
                 case 1:
-                spl.gaussSPLFile(M);
+                spl.gaussSPLFile(M, temp);
                 break;
                 
                 case 2:
@@ -1251,50 +1252,56 @@ public class Main {
             case 3:
             break;
         }
+        
+        Matrix inverse = op.copyMatrix(M);
 
         if (M.rowEff > 0 && M.colEff > 0)
         {
-            if (det.determinantCofactor(M) == 0)
+            if (M.rowEff != M.colEff)
             {
-                System.out.println("Matriks tidak memiliki balikan.");
+                System.out.println("Matriks tidak memiliki invers karena bukan matriks persegi.");
+            }
+            else if (det.determinantOBE(M) == 0)
+            {
+                System.out.println("Matriks tidak memiliki invers karena determinan bernilai 0.");
             }
             else
             {
-                M = inv.inverseGJ(M);
+                inverse = inv.inverseGJ(M);
                 System.out.print("\nBalikannya adalah: \n");
-                M.writeMatrix();
+                inverse.writeMatrix();
+            }
         
-                System.out.println("Simpan dalam bentuk file?");
-                System.out.println("1. Ya");
-                System.out.println("2. Tidak");
-                do
+            System.out.println("Simpan dalam bentuk file?");
+            System.out.println("1. Ya");
+            System.out.println("2. Tidak");
+            do
+            {
+                System.out.print(">>");
+                line = in.nextLine();
+                row = line.split(" ");
+                try 
                 {
-                    System.out.print(">>");
-                    line = in.nextLine();
-                    row = line.split(" ");
-                    try 
-                    {
-                        input = Integer.parseInt(row[0]);
-                    } 
-                    catch (NumberFormatException e) 
-                    {
-                        input = 0;
-                    }
-                    if (input <= 0 || input > 2) 
-                    {
-                        System.out.println("Input tidak valid! Silahkan input dengan benar.");
-                    } 
+                    input = Integer.parseInt(row[0]);
                 } 
-                while (input <= 0 || input > 2);
-        
-                switch (input){
-                    case 1:
-                    M.exportMatrix();
-        
-                    case 2:
-                    System.out.println("\nKembali ke menu utama...");
-                    break;
+                catch (NumberFormatException e) 
+                {
+                    input = 0;
                 }
+                if (input <= 0 || input > 2) 
+                {
+                    System.out.println("Input tidak valid! Silahkan input dengan benar.");
+                } 
+            } 
+            while (input <= 0 || input > 2);
+    
+            switch (input){
+                case 1:
+                inv.exportInverse(M, inverse);
+    
+                case 2:
+                System.out.println("\nKembali ke menu utama...");
+                break;
             }
         }
         else
@@ -1328,6 +1335,7 @@ public class Main {
             {
                 input = 0;
             }
+
             if (input <= 0 || input > 3) 
             {
                 System.out.println("Input tidak valid! Silahkan input dengan benar.");
@@ -1357,10 +1365,11 @@ public class Main {
                 {
                     dimensi = Integer.parseInt(row[0]);
                 } 
-                catch (NumberFormatException e)
+                catch (NumberFormatException e) 
                 {
                     dimensi = 0;
                 }
+
                 if (dimensi <= 0) 
                 {
                     System.out.println("Input tidak valid! Silahkan input dengan benar.");
@@ -1375,52 +1384,56 @@ public class Main {
             case 3:
             break;
         }
+        
+        Matrix inverse = op.copyMatrix(M);
 
-        if (M.rowEff > 0 && M.colEff > 0){
-            // Jika determinan dari 
-            if (det.determinantCofactor(M) == 0)
-            { 
-                System.out.println("Matriks tidak memiliki balikan.");
+        if (M.rowEff > 0 && M.colEff > 0)
+        {
+            if (M.rowEff != M.colEff)
+            {
+                System.out.println("Matriks tidak memiliki invers karena bukan matriks persegi.");
+            }
+            else if (det.determinantOBE(M) == 0)
+            {
+                System.out.println("Matriks tidak memiliki invers karena determinan bernilai 0.");
             }
             else
             {
-                M = inv.inverseDet(M);
+                inverse = inv.inverseDet(M);
                 System.out.print("\nBalikannya adalah: \n");
-                M.writeMatrix();
+                inverse.writeMatrix();
+            }
         
-                System.out.println("Simpan dalam bentuk file?");
-                System.out.println("1. Ya");
-                System.out.println("2. Tidak");
-                do
+            System.out.println("Simpan dalam bentuk file?");
+            System.out.println("1. Ya");
+            System.out.println("2. Tidak");
+            do
+            {
+                System.out.print(">>");
+                line = in.nextLine();
+                row = line.split(" ");
+                try 
                 {
-                    System.out.print(">>");
-                    line = in.nextLine();
-                    row = line.split(" ");
-                    try 
-                    {
-                        input = Integer.parseInt(row[0]);
-                    } 
-                    catch (NumberFormatException e) 
-                    {
-                        input = 0;
-                    }
-
-                    if (input <= 0 || input > 2) 
-                    {
-                        System.out.println("Input tidak valid! Silahkan input dengan benar.");
-                    } 
+                    input = Integer.parseInt(row[0]);
                 } 
-                while (input <= 0 || input > 2);
-        
-                switch (input)
+                catch (NumberFormatException e) 
                 {
-                    case 1:
-                    M.exportMatrix();
-        
-                    case 2:
-                    System.out.println("\nKembali ke menu utama...");
-                    break;
+                    input = 0;
                 }
+                if (input <= 0 || input > 2) 
+                {
+                    System.out.println("Input tidak valid! Silahkan input dengan benar.");
+                } 
+            } 
+            while (input <= 0 || input > 2);
+    
+            switch (input){
+                case 1:
+                inv.exportInverse(M, inverse);
+    
+                case 2:
+                System.out.println("\nKembali ke menu utama...");
+                break;
             }
         }
         else
@@ -1534,7 +1547,7 @@ public class Main {
             switch (input)
             {
                 case 1:
-                // InterpolasiPolinom.IPFile(ai, a);
+                inter.interpolationFile(M);
                 break;
         
                 case 2:
@@ -1707,10 +1720,15 @@ public class Main {
         /* Proses */
         if (!(M.rowEff == 0 || M.rowEff == 0)) 
         {
-            //output terminal biasa
-            System.out.println("\nHasil Perhitungan Regresi Linear Berganda");
             System.out.println("Persamaan regresi linear berganda f(x):");
-            reg.linearRegression(M);
+            Matrix beta = reg.QuadraticRegression(M);
+            Matrix y = new Matrix(M.colEff - 1, 1);
+
+            for (int i = 0; i < M.colEff - 1; i++) 
+            {
+                y.matrix[i][0] = M.matrix[M.rowEff - 1][i];
+            }
+            reg.calcFxQuadratic(beta, y);
             
            //Output File
             System.out.println("\nSimpan dalam bentuk file?");
@@ -1740,7 +1758,7 @@ public class Main {
             switch (input)
             {
                 case 1:
-                reg.quadraticRegressionFile(M);
+                reg.quadraticRegressionFile(M, y);
                 break;
     
                 case 2:
@@ -1776,14 +1794,15 @@ public class Main {
 
         /* Proses */
         if (!(M.rowEff == 0 || M.colEff == 0)) {
-            // Matrix mAij = bicubicInterpolation.mAij(bicubicInterpolation.m16x1(bicubicInterpolation.m4x4(M)));
-            // double a = bicubicInterpolation.getA(M); 
-            // double b = bicubicInterpolation.getB(M); 
+            Matrix matrixF = bi.getMatrixF(M);
+            double a = bi.getA(M); 
+            double b = bi.getB(M); 
 
-            // /* Output terminal */
-            // System.out.println("\nHasil Bicubic Interpolation");
-            // System.out.println("Nilai x dan y dari masukan disubstitusikan, dan hasilnya adalah");
-            // System.out.println("f(" + a + "," + b + ") = " + bicubicInterpolation.getFab(mAij, a, b));
+            Matrix Ma_ij = bi.getMatrixAij(matrixF);
+            double result = bi.getFabResult(Ma_ij, a, b);
+
+            /* Output terminal */
+            System.out.println("Hasil dari f(" +String.valueOf(a)+","+ String.valueOf(b)+ "): " +String.valueOf(result));
             
             /* Output file */
             System.out.println("\nSimpan dalam bentuk file?");
@@ -1813,7 +1832,8 @@ public class Main {
             switch (input)
             {
                 case 1:
-                // bicubicInterpolation.bicubicInterFile(mAij, a, b);
+                Ma_ij.writeMatrix();
+                bi.exportBicubic(Ma_ij, a, b);
         
                 case 2:
                 System.out.println("\nKembali ke menu utama...");
