@@ -50,10 +50,14 @@ public class SPL
         else
         {
             M1 = inv.inverseDet(M1);
-            M1.writeMatrix();
-            M2.writeMatrix();
             M2 = op.multiplyMatrix(M1, M2);
+
+            System.out.println("Matriks Augmented: ");
+            M.writeMatrix();
+            System.out.println();
+            System.out.println("Matriks Hasil: ");
             M2.writeMatrix();
+            System.out.println();
 
             System.out.println("Solusi: ");
             for (int i = 0; i < M2.rowEff; i++)
@@ -64,6 +68,7 @@ public class SPL
                 System.out.print(M2.matrix[i][0]);
                 System.out.print(", \n");
             }
+            System.out.println();
         }   
     }
 
@@ -265,47 +270,7 @@ public class SPL
         return temp;
     }
 
-    public void kaidahCramer(Matrix m)
-    {
-        Matrix A = new Matrix();
-        Matrix B = new Matrix();
-        double detX, determinant;
-
-        // memotong elemen terakhir dari matriks augmented dan masukin ke matriks A
-        for(int i = 0; i < m.rowEff; i++){
-            for(int j = 0; j < m.colEff-1; j++)
-            {
-                A.matrix[i][j] = m.matrix[i][j];
-            }
-        }
-
-        determinant = det.determinantCofactor(A);
-
-        if (determinant == 0)
-        {
-            System.out.println("Tidak bisa menggunakan kaidah cramer karena determinan matriks = 0");
-        }
-        else
-        {
-            // bikin matriks yang isinya b
-            for (int i=0; i<m.rowEff; i++)
-            {
-                B.matrix[i][0] = m.matrix[i][m.colEff-1];
-            }
-
-            for (int j=0; j<m.colEff-1; j++)
-            {
-                for(int i=0; i<m.rowEff; i++)
-                {
-                    A.matrix[i][j] = B.matrix[i][0];
-                }
-                detX = det.determinantCofactor(A);
-                System.out.println("Nilai x" + (j+1) + " = " + detX/determinant);
-            }
-        }
-    }
-
-        // Prosedur untuk implementasi solusi kaidah cramer
+    // Prosedur untuk implementasi solusi kaidah cramer
     public void CramerSPL(Matrix M)
     {
         Matrix M1 = new Matrix();
