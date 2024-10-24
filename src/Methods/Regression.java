@@ -11,9 +11,13 @@ import java.io.IOException;
 
 // import java packages
 import java.lang.Math;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Scanner;
 
 public class Regression {
+    Inverse inv = new Inverse();
+    Determinant det = new Determinant();
     Operation op = new Operation();
     static Scanner input = new Scanner(System.in);
 
@@ -126,23 +130,6 @@ public class Regression {
         return fx;
     }
 
-    public double calcFxQuadratic(Matrix a, Matrix m) {
-        double fx = a.matrix[0][a.colEff - 1]; // constant term
-        int numOriginalVars = (m.colEff - 1) / 2;
-
-        // Linear terms
-        for (int i = 1; i <= numOriginalVars; i++) {
-            fx += a.matrix[i][a.colEff - 1] * m.matrix[m.rowEff - 1][i - 1];
-        }
-
-        // Quadratic terms
-        for (int i = numOriginalVars + 1; i < a.rowEff; i++) {
-            fx += a.matrix[i][a.colEff - 1] * m.matrix[m.rowEff - 1][i - 1];
-        }
-
-        return fx;
-    }
-
     public Matrix normalize(Matrix m) {
         Matrix m1 = op.transposeMatrix(m);
         Matrix norm = new Matrix(m.colEff, m.colEff + 1);
@@ -235,202 +222,225 @@ public class Regression {
         return output.toString();
     }
 
-    public void quadraticRegression(Matrix M) {
-        Matrix norm = normalize(M);
-        Matrix a = regressionGJ(norm);
-        String equation = generateQuadraticEquation(a, M);
-        double fx = calcFxQuadratic(a, M);
+    public Matrix QuadraticRegression(Matrix M) {
+        
+        int m = M.rowEff - 1;
+        int n = M.colEff - 1;
+        
+        Matrix X = new Matrix(m, ((n * n) + (3 * n) + 2) / 2);
+        Matrix Y = new Matrix(m, 1);
+        Matrix y = new Matrix(n, 1);
 
-        // Output to console
-        M.writeMatrix();
-        System.out.println();
-        System.out.println("Persamaan regresi linear: " + equation);
-        System.out.println("Hasil taksiran f(x): " + fx);
+        for (int i = 0; i < m; i++) {
+
+            X.matrix[i][0] = 1;
+
+            for (int j = 0; j < n; j++) 
+            {
+                X.matrix[i][j + 1] = M.matrix[i][j];
+                X.matrix[i][j + n + 1] = M.matrix[i][j] * M.matrix[i][j];
+            }
+
+            int index = 2 * n + 1;
+            for (int j = 1; j <= n; j++)
+            {
+                for (int k = j + 1; k <= n; k++)
+                {
+                    X.matrix[i][index] = X.matrix[i][j] * X.matrix[i][k];
+                    index++;
+                }
+            
+            Y.matrix[i][0] = M.matrix[i][n];
+            }
+        }
+
+        for (int i = 0; i < n; i++) 
+        {
+            y.matrix[i][0] = M.matrix[M.rowEff - 1][i];
+        }
+
+        Matrix XT = op.transposeMatrix(X);
+        Matrix XTX = op.multiplyMatrix(XT, X);
+
+        if (det.determinantOBE(XTX) == 0)
+        {
+            throw new IllegalArgumentException("Matrix XTX is singular");
+        }
+
+        Matrix XTXI = inv.inverseGJ(XTX);
+        Matrix XTXIXT = op.multiplyMatrix(XTXI, XT);
+        Matrix beta = op.multiplyMatrix(XTXIXT, Y);
+
+
+        return beta;
     }
 
-    public void quadraticRegressionFile(Matrix M) {
+    public void calcFxQuadratic(Matrix beta, Matrix y)
+    {
+        int n = y.rowEff;
+        System.out.print("Persamaan regresi kuadratik: f(x):");
+        System.out.println();
+
+        for (int i = 0; i < beta.rowEff; i++)
+        {
+
+            if (i == 0)
+                if (beta.matrix[i][0] >= 0) System.out.print(new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros());
+                else System.out.print(" - " + (new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros().abs()));
+            else if (i <= n) 
+                if (beta.matrix[i][0] >= 0) System.out.print(" + " + new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros() + "x" + i);
+                else System.out.print(" - " + new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros().abs() + "x" + i);
+            else if (i <= 2 * n)
+                if (beta.matrix[i][0] >= 0) System.out.print(" + " + new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros() + "x" + (i - n) + "^2");
+                else System.out.print(" - " + new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros().abs() + "x" + (i - n) + "^2");
+            else
+            {
+                for (int j = 1; j <= n; j++)
+                {
+                    for (int k = j + 1; k <= n; k++)
+                    {
+                        if (beta.matrix[i][0] >= 0) System.out.print(" + " + new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros() + "x" + j + "x" + k);
+                        else System.out.print(" - " + new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros().abs() + "x" + j + "x" + k);
+                        i++;
+                    }
+                }
+            }
+        }
+
+        double fy = 0;
+
+        // Iterate through each effective row in the beta matrix
+        for (int i = 0; i < beta.rowEff; i++) {
+        
+            // First element case
+            if (i == 0) {
+                fy += beta.matrix[i][0];  // Add first beta value
+            }
+            // Linear terms
+            else if (i <= n) {
+                fy += beta.matrix[i][0] * y.matrix[i - 1][0];  // Linear contribution from y
+            }
+            // Quadratic terms (single variable)
+            else if (i <= 2 * n) {
+                fy += beta.matrix[i][0] * y.matrix[i - n - 1][0] * y.matrix[i - n - 1][0];  // Quadratic contribution from y
+            }
+            // Interaction terms
+            else {
+                int index = 2 * n + 1;  // Initialize index for interactions
+                for (int j = 1; j <= n; j++) {
+                    for (int k = j + 1; k <= n; k++) {
+                        // Ensure you are accessing the correct matrix entries
+                        fy += beta.matrix[index][0] * y.matrix[j - 1][0] * y.matrix[k - 1][0];  // Interaction contribution
+                        index++;  // Increment index for the next beta matrix row
+                    }
+                }
+                // Remove the break if you expect to continue looping
+                break;
+            }
+        }
+        
+        // At this point, fy should contain the computed result
+        
+        System.out.println();
+
+        String predict = "";
+        for (int i = 0; i < y.rowEff; i++)
+        {
+            if (i == y.rowEff - 1) predict += (y.matrix[i][0]);
+            else predict += y.matrix[i][0] + ", ";
+        }
+        BigDecimal bdfy = new BigDecimal(fy).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros();
+        System.out.println("\nHasil taksiran f(" + predict + "): " + bdfy);
+    }
+
+    public void quadraticRegressionFile(Matrix M, Matrix y) 
+    {
         System.out.print("\nMasukkan nama file: ");
         String filename = input.nextLine() + ".txt";
-        try {
-            Matrix norm = normalize(M);
-            Matrix a = regressionGJ(norm);
-            String equation = generateQuadraticEquation(a, M);
-            double fx = calcFxQuadratic(a, M);
 
+        int n = M.colEff - 1;
+        Matrix beta = QuadraticRegression(M);
+
+        try {
             String userDirectory = System.getProperty("user.dir");
             BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
+            
+            writer.write("Persamaan regresi kuadratik: f(x):");
+            writer.newLine();
 
-            // Write input data
-            writer.write("Data Input:\n");
-
-            for (int row = 0; row < M.rowEff; row++)
+            for (int i = 0; i < beta.rowEff; i++)
             {
-                for (int col = 0; col < M.colEff; col++)
+                if (i == 0)
+                    if (beta.matrix[i][0] >= 0) writer.write((new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()).toPlainString());
+                    else writer.write("- " + (new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()).abs().toPlainString());
+                else if (i <= n) 
+                    if (beta.matrix[i][0] >= 0) writer.write(" + " + new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString() + "x" + i);
+                    else writer.write(" - " + (new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()).abs().toPlainString() + "x" + i);
+                else if (i <= 2 * n)
+                    if (beta.matrix[i][0] >= 0) writer.write(" + " + new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString() + "x" + (i - n) + "^2");
+                    else writer.write(" - " + (new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()).abs().toPlainString() + "x" + (i - n) + "^2");
+                else
                 {
-                    writer.write(M.matrix[row][col] + " ");
+                    for (int j = 1; j <= n; j++)
+                    {
+                        for (int k = j + 1; k <= n; k++)
+                        {
+                            if (beta.matrix[i][0] >= 0) writer.write(" + " + (new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()).abs().toPlainString() + "x" + j + "x" + k);
+                            else writer.write(" - " + (new BigDecimal(beta.matrix[i][0]).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros()).abs().toPlainString() + "x" + j + "x" + k);
+                            i++;
+                        }
+                    }
                 }
-                writer.newLine();
             }
 
-            // Write equation and result
-            writer.write("Persamaan regresi kuadratik: " + equation + "\n");
-            writer.write("Hasil taksiran f(x): " + fx + "\n\n");
+            double fy = 0;
+
+            // Iterate through each effective row in the beta matrix
+            for (int i = 0; i < beta.rowEff; i++) {
+            
+                // First element case
+                if (i == 0) {
+                    fy += beta.matrix[i][0];  // Add first beta value
+                }
+                // Linear terms
+                else if (i <= n) {
+                    fy += beta.matrix[i][0] * y.matrix[i - 1][0];  // Linear contribution from y
+                }
+                // Quadratic terms (single variable)
+                else if (i <= 2 * n) {
+                    fy += beta.matrix[i][0] * y.matrix[i - n - 1][0] * y.matrix[i - n - 1][0];  // Quadratic contribution from y
+                }
+                // Interaction terms
+                else {
+                    int index = 2 * n + 1;  // Initialize index for interactions
+                    for (int j = 1; j <= n; j++) {
+                        for (int k = j + 1; k <= n; k++) {
+                            // Ensure you are accessing the correct matrix entries
+                            fy += beta.matrix[index][0] * y.matrix[j - 1][0] * y.matrix[k - 1][0];  // Interaction contribution
+                            index++;  // Increment index for the next beta matrix row
+                        }
+                    }
+                    // Remove the break if you expect to continue looping
+                    break;
+                }
+            }
+            writer.newLine();
+    
+            String predict = "";
+            for (int i = 0; i < y.rowEff; i++)
+            {
+                if (i == y.rowEff - 1) predict += (y.matrix[i][0]);
+                else predict += y.matrix[i][0] + ", ";
+            }
+            BigDecimal bdfy = new BigDecimal(fy).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros();
+            writer.write("\nHasil taksiran f(" + predict + "): " + bdfy.toString());
             
             writer.close();
-
             System.out.println("File berhasil dibuat!");
-        } 
-        catch (IOException e) 
-        {
+
+        } catch (IOException e) {
             System.out.println("Terjadi error dalam pembuatan file!");
+            e.printStackTrace();
         }
     }
-
-    private String generateQuadraticEquation(Matrix a, Matrix M) {
-        StringBuilder output = new StringBuilder("f(x) = ");
-        int numOriginalVars = (M.colEff - 1) / 2;
-
-        // Constant term
-        output.append(String.format("%.10f", a.matrix[0][a.colEff - 1]));
-
-        // Linear terms for all variables (x1, x2, x3, etc.)
-        for (int i = 1; i <= numOriginalVars; i++) {
-            double coef = a.matrix[i][a.colEff - 1];
-            if (coef >= 0) {
-                output.append(" + ");
-            } else {
-                output.append(" - ");
-            }
-            output.append(String.format("%.10f", Math.abs(coef))).append("x").append(i);
-        }
-
-        // Quadratic terms for all variables (x1², x2², x3², etc.)
-        for (int i = 1; i <= numOriginalVars; i++) {
-            double coef = a.matrix[i + numOriginalVars][a.colEff - 1];
-            if (coef >= 0) {
-                output.append(" + ");
-            } else {
-                output.append(" - ");
-            }
-            output.append(String.format("%.10f", Math.abs(coef))).append("x").append(i).append("²");
-        }
-
-        // Cross-product terms (x1x2, x1x3, x2x3, etc.)
-        for (int i = 1; i <= numOriginalVars; i++) {
-            for (int j = i + 1; j <= numOriginalVars; j++) {
-                double coef = a.matrix[i + j + numOriginalVars - 1][a.colEff - 1];
-                if (coef >= 0) {
-                    output.append(" + ");
-                } else {
-                    output.append(" - ");
-                }
-                output.append(String.format("%.10f", Math.abs(coef)))
-                    .append("x").append(i)
-                    .append("x").append(j);
-            }
-        }
-
-        return output.toString();
-    }
-
-    public void main(String[] args) {
-        // Matrix M = new Matrix(21, 4);
-        // M.matrix[0][0] = 72.4;
-        // M.matrix[0][1] = 76.3;
-        // M.matrix[0][2] = 29.18;
-        // M.matrix[0][3] = 0.9;
-        // M.matrix[1][0] = 41.6;
-        // M.matrix[1][1] = 70.3;
-        // M.matrix[1][2] = 29.35;
-        // M.matrix[1][3] = 0.91;
-        // M.matrix[2][0] = 34.3;
-        // M.matrix[2][1] = 77.1;
-        // M.matrix[2][2] = 29.24;
-        // M.matrix[2][3] = 0.96;
-        // M.matrix[3][0] = 35.1;
-        // M.matrix[3][1] = 68.0;
-        // M.matrix[3][2] = 29.27;
-        // M.matrix[3][3] = 0.89;
-        // M.matrix[4][0] = 10.7;
-        // M.matrix[4][1] = 79.0;
-        // M.matrix[4][2] = 29.78;
-        // M.matrix[4][3] = 1.00;
-        // M.matrix[5][0] = 12.9;
-        // M.matrix[5][1] = 67.4;
-        // M.matrix[5][2] = 29.39;
-        // M.matrix[5][3] = 1.10;
-        // M.matrix[6][0] = 8.3;
-        // M.matrix[6][1] = 66.8;
-        // M.matrix[6][2] = 29.69;
-        // M.matrix[6][3] = 1.15;
-        // M.matrix[7][0] = 20.1;
-        // M.matrix[7][1] = 76.9;
-        // M.matrix[7][2] = 29.48;
-        // M.matrix[7][3] = 1.03;
-        // M.matrix[8][0] = 72.2;
-        // M.matrix[8][1] = 77.7;
-        // M.matrix[8][2] = 29.09;
-        // M.matrix[8][3] = 0.77;
-        // M.matrix[9][0] = 24.0;
-        // M.matrix[9][1] = 67.7;
-        // M.matrix[9][2] = 29.60;
-        // M.matrix[9][3] = 1.07;
-        // M.matrix[10][0] = 23.2;
-        // M.matrix[10][1] = 76.8;
-        // M.matrix[10][2] = 29.38;
-        // M.matrix[10][3] = 1.07;
-        // M.matrix[11][0] = 47.4;
-        // M.matrix[11][1] = 86.6;
-        // M.matrix[11][2] = 29.35;
-        // M.matrix[11][3] = 0.94;
-        // M.matrix[12][0] = 31.5;
-        // M.matrix[12][1] = 76.9;
-        // M.matrix[12][2] = 29.63;
-        // M.matrix[12][3] = 1.10;
-        // M.matrix[13][0] = 10.6;
-        // M.matrix[13][1] = 86.3;
-        // M.matrix[13][2] = 29.56;
-        // M.matrix[13][3] = 1.10;
-        // M.matrix[14][0] = 11.2;
-        // M.matrix[14][1] = 86.0;
-        // M.matrix[14][2] = 29.48;
-        // M.matrix[14][3] = 1.10;
-        // M.matrix[15][0] = 73.3;
-        // M.matrix[15][1] = 76.3;
-        // M.matrix[15][2] = 29.40;
-        // M.matrix[15][3] = 0.91;
-        // M.matrix[16][0] = 75.4;
-        // M.matrix[16][1] = 77.9;
-        // M.matrix[16][2] = 29.28;
-        // M.matrix[16][3] = 0.87;
-        // M.matrix[17][0] = 96.6;
-        // M.matrix[17][1] = 78.7;
-        // M.matrix[17][2] = 29.29;
-        // M.matrix[17][3] = 0.78;
-        // M.matrix[18][0] = 107.4;
-        // M.matrix[18][1] = 86.8;
-        // M.matrix[18][2] = 29.03;
-        // M.matrix[18][3] = 0.82;
-        // M.matrix[19][0] = 54.9;
-        // M.matrix[19][1] = 70.9;
-        // M.matrix[19][2] = 29.37;
-        // M.matrix[19][3] = 0.95;
-        // M.matrix[20][0] = 50;
-        // M.matrix[20][1] = 76;
-        // M.matrix[20][2] = 29.30;
-        // M.matrix[20][3] = -999.0;
-
-        // Matrix inputMatrix = mtxfromkeyboard(); // Menerima input dari pengguna
-        // quadraticRegression(M); // Menyelesaikan dan mencetak hasil regresi
-        Matrix M = new Matrix();
-        Scanner in = new Scanner(System.in);
-        String filepath, filename = in.nextLine(), userDirectory = System.getProperty("user.dir");
-        filepath = userDirectory + "/test/case/" + filename + ".txt";
-        in.close();
-        M.importMatrixWithEmpty(filepath, 1);
-        M.writeMatrix();
-        linearRegression(M);
-        quadraticRegression(M);
-    }
-    
 }
