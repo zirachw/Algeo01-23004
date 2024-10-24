@@ -4,6 +4,7 @@ import ADTMatrix.*;
 import java.util.Scanner;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.io.File;
 
 public class Main {
 
@@ -13,7 +14,8 @@ public class Main {
     Operation op = new Operation();
     Determinant det = new Determinant();
     Regression reg = new Regression();
-    bicubicInterpolation bi = new bicubicInterpolation();
+    ImageResizing ir = new ImageResizing();
+    BicubicInterpolation bi = new BicubicInterpolation();
     PolynomialInterpolation inter = new PolynomialInterpolation();
 
     /* MAIN PROGRAM */
@@ -35,7 +37,8 @@ public class Main {
             System.out.println("4. Interpolasi Polinom");
             System.out.println("5. Interpolasi Bicubic Spline");
             System.out.println("6. Regresi Linear Berganda");
-            System.out.println("7. Keluar");
+            System.out.println("7. Image Resizing");
+            System.out.println("8. Keluar");
             
             // Lakukan looping selama input belum valid
             do 
@@ -51,11 +54,11 @@ public class Main {
                 }catch (NumberFormatException e){
                     input = 0;
                 }
-                if (input <= 0 || input > 7){
+                if (input <= 0 || input > 8){
                     System.out.println("Input tidak valid! Silahkan input dengan benar.");
                 }
             }
-            while(input <= 0 || input > 7);
+            while(input <= 0 || input > 8);
 
             switch(input)
             {
@@ -278,6 +281,10 @@ public class Main {
                 break;
 
                 case 7:
+                System.out.print("\033[H\033[2J");
+                Image();
+
+                case 8:
                 System.out.print("Sampai Jumpa!");
                 run = false;
                 break;
@@ -1879,5 +1886,17 @@ public class Main {
         {
             System.out.println("\nOperasi gagal, kembali ke menu utama...");
         }
+    }
+
+    public void Image()
+    {
+        /* Menerima masukan dari file */
+        System.out.print("\nMengambil file dari folder test.");
+        System.out.print("\nNama file (dengan extensionnya. Misal: .jpg) >> ");
+
+        String sourceImg = in.nextLine();
+        String imgDirectory = System.getProperty("user.dir") + "/test/img/";
+        File imgFile = new File(imgDirectory + sourceImg);
+        ir.imageProccesing(imgFile);
     }
 }
