@@ -4,6 +4,7 @@ import ADTMatrix.Matrix;
 import ADTMatrix.Operation;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Scanner;
@@ -136,8 +137,7 @@ public class Determinant {
         {
             for (int row = 0; row < M.rowEff; row++) 
             {
-                BigDecimal bd = new BigDecimal(M.matrix[row][col]);
-                bd = bd.stripTrailingZeros();
+                BigDecimal bd = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros();
                 int width = (bd.toString()).length();
                 
                 if (width > columnWidths[col]) 
@@ -149,11 +149,13 @@ public class Determinant {
 
         try
         {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("./test/" + filename));
+            String userDirectory = System.getProperty("user.dir");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(userDirectory + "/test/result/" + filename));
             
             writer.write("Matriks: ");
             writer.newLine();
-                    // Pretty Print :)
+
+            // Pretty Print :)
             for (int row = 0; row < M.rowEff; row++)
             {
                 if (M.rowEff == 1)
@@ -175,8 +177,7 @@ public class Determinant {
 
                 for (int col = 0; col < M.colEff; col++)
                 {
-                    BigDecimal bd = new BigDecimal(M.matrix[row][col]);
-                    bd = bd.stripTrailingZeros();
+                    BigDecimal bd = new BigDecimal(M.matrix[row][col]).setScale(5, RoundingMode.HALF_UP).stripTrailingZeros(); // Round to 5 decimal places
                     writer.write(String.format("%" + (columnWidths[col] + 2) + "s", bd.toPlainString()));
                 }
 
@@ -199,7 +200,7 @@ public class Determinant {
                 writer.newLine();
             }
             writer.newLine();
-            System.out.println(det);
+
             if (M.rowEff != M.colEff)
             {
                 writer.write("Determinan tidak dapat dihitung karena bukan matriks persegi.");
