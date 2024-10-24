@@ -60,7 +60,15 @@ In addition, the library is used in Java programs to solve various problems mode
 │   └── ...
 │
 ├── test         # contains test cases
-│   └── ...
-│
+│   │
+│   ├── case     # contains given cases
+│   │    └── ...
+│   │
+│   ├── img      # contains source images for ImageResizing
+│   │    └── ...
+│   │
+│   └── result   # contains results of calculator
+│        └── ...
+│   
 └── README.md    # brief explanation of the program
 ```
