@@ -29,22 +29,27 @@ public class Main {
         // Tampilkan pilihan menu
         while (run)
         {
-            System.out.print("Rudal Sekeloa Bantai Matrixxx\n");
-            System.out.println("\nMENU");
-            System.out.println("1. Sistem Persamaan Linear");
-            System.out.println("2. Determinan");
-            System.out.println("3. Matriks Balikan");
-            System.out.println("4. Interpolasi Polinom");
-            System.out.println("5. Interpolasi Bicubic Spline");
-            System.out.println("6. Regresi Linear Berganda");
-            System.out.println("7. Image Resizing");
-            System.out.println("8. Keluar");
+            System.out.print("\033[H\033[2J");
+            // Display the menu with enhanced formatting
+            System.out.println("========================================");
+            System.out.println("|       MENU UTAMA RUDAL SEKELOA       |");
+            System.out.println("========================================");
+            System.out.println("| 1 | Sistem Persamaan Linear          |");
+            System.out.println("| 2 | Determinan                       |");
+            System.out.println("| 3 | Matriks Balikan                  |");
+            System.out.println("| 4 | Interpolasi Polinom              |");
+            System.out.println("| 5 | Interpolasi Bicubic Spline       |");
+            System.out.println("| 6 | Regresi Linear Berganda          |");
+            System.out.println("| 7 | Image Resizing                   |");
+            System.out.println("| 8 | Keluar                           |");
+            System.out.println("========================================");
+            System.out.println();
             
             // Lakukan looping selama input belum valid
             do 
             {
                 // Terima input pilihan menu dari pengguna
-                System.out.print(">> ");
+                System.out.print("Pilih menu (1 - 8) >> ");
                 line = in.nextLine();
                 row = line.split(" ");
                 // Lakukan penanganan error
@@ -65,18 +70,22 @@ public class Main {
                 // Bila pengguna input 1, maka masuk ke SPL
                 case 1:
                 System.out.print("\033[H\033[2J");
-                System.out.println("Sistem Persamaan Linear");
-                System.out.println("\nPILIH METODE");
-                System.out.println("1. Metode Eliminasi Gauss");
-                System.out.println("2. Metode Eliminasi Gauss-Jordan");
-                System.out.println("3. Metode Matriks Balikan");
-                System.out.println("4. Kaidah Cramer");
-                System.out.println("5. Kembali Ke Menu");
+                System.out.println("========================================");
+                System.out.println("|        Sistem Persamaan Linear       |");
+                System.out.println("========================================");
+                System.out.println("| 1 | Metode Eliminasi Gauss           |");
+                System.out.println("| 2 | Metode Eliminasi Gauss-Jordan    |");
+                System.out.println("| 3 | Metode Matriks Balikan           |");
+                System.out.println("| 4 | Kaidah Cramer                    |");
+                System.out.println("| 5 | Kembali Ke Menu                  |");
+                System.out.println("========================================");
+                System.out.println();
+
                 // Lakukan looping selama input belum valid
                 do{
 
                     // Terima input pilihan metode SPL dari pengguna
-                    System.out.print(">> ");
+                    System.out.print("Pilih metode (1 - 5) >> ");
                     line = in.nextLine();
                     row = line.split(" ");
                     try
@@ -132,14 +141,18 @@ public class Main {
 
                 case 2:
                 System.out.print("\033[H\033[2J");
-                System.out.println("Determinan");
-                System.out.println("\nPILIH METODE");
-                System.out.println("1. Metode OBE");
-                System.out.println("2. Metode Kofaktor");
-                System.out.println("3. Kembali Ke Menu");
+                System.out.println("========================================");
+                System.out.println("|              Determinan              |");
+                System.out.println("========================================");
+                System.out.println("| 1 | Metode Operasi Baris Elementer   |");
+                System.out.println("| 2 | Metode Kofaktor                  |");
+                System.out.println("| 3 | Kembali Ke Menu                  |");
+                System.out.println("========================================");
+                System.out.println();
+
                 do
                 {
-                    System.out.print(">> ");
+                    System.out.print("Pilih metode (1 - 3) >> ");
                     line = in.nextLine();
                     row = line.split(" ");
                     try
@@ -181,13 +194,17 @@ public class Main {
 
                 case 3:
                 System.out.print("\033[H\033[2J");
-                System.out.println("Matriks Balikan");
-                System.out.println("\nPILIH METODE");
-                System.out.println("1. Metode Identitas");
-                System.out.println("2. Metode Adjoint");
-                System.out.println("3. Kembali Ke Menu");
+                System.out.println("========================================");
+                System.out.println("|           Invers / Balikan           |");
+                System.out.println("========================================");
+                System.out.println("| 1 | Metode Matriks Identitas         |");
+                System.out.println("| 2 | Metode Adjoint                   |");
+                System.out.println("| 3 | Kembali Ke Menu                  |");
+                System.out.println("========================================");
+                System.out.println();
+
                 do{
-                    System.out.print(">> ");
+                    System.out.print("Pilih metode (1 - 3) >> ");
                     line = in.nextLine();
                     row = line.split(" ");
                     try
@@ -240,14 +257,17 @@ public class Main {
 
                 case 6:
                 System.out.print("\033[H\033[2J");
-                System.out.print("\033[H\033[2J");
-                System.out.println("Regresi");
-                System.out.println("\nPILIH METODE");
-                System.out.println("1. Regresi Linear Berganda");
-                System.out.println("2. Regresi Kuadratik Berganda");
-                System.out.println("3. Kembali Ke Menu");
+                System.out.println("========================================");
+                System.out.println("|                Regresi               |");
+                System.out.println("========================================");
+                System.out.println("| 1 | Regresi Linear Berganda          |");
+                System.out.println("| 2 | Regresi Kuadratik Berganda       |");
+                System.out.println("| 3 | Kembali Ke Menu                  |");
+                System.out.println("========================================");
+                System.out.println();
+
                 do{
-                    System.out.print(">> ");
+                    System.out.print("Pilih metode (1 - 3) >> ");
                     line = in.nextLine();
                     row = line.split(" ");
                     try{
@@ -305,14 +325,18 @@ public class Main {
         int baris, kolom, input = 0;
         Boolean notFirst = false;
 
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
 
         do
         {
-            System.out.print(">> ");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try
@@ -396,6 +420,7 @@ public class Main {
             break;
         }
         Matrix temp = op.copyMatrix(M);
+        System.out.print("\033[H\033[2J");
         if (M.rowEff > 0 && M.colEff > 0)
         {
             M = spl.gauss(M);
@@ -454,14 +479,18 @@ public class Main {
         int baris, kolom, input;
         Boolean notFirst = false;
 
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
 
         do
         {
-            System.out.print(">> ");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try
@@ -543,6 +572,7 @@ public class Main {
             break;
         }
         Matrix temp = op.copyMatrix(M);
+        System.out.print("\033[H\033[2J");
         if (M.rowEff > 0 && M.colEff > 0)
         {
             M = spl.gaussJordan(M);
@@ -599,14 +629,18 @@ public class Main {
         int baris, kolom, input;
         Boolean notFirst = false;
 
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
 
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try
@@ -687,7 +721,7 @@ public class Main {
             case 3:
             break;
         }
-
+        System.out.print("\033[H\033[2J");
         if (M.rowEff > 0 && M.colEff > 0)
         {
             spl.InverseSPL(M);
@@ -743,14 +777,18 @@ public class Main {
         int input, baris, kolom;
         Boolean notFirst = false;
 
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
-        
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
+
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try 
@@ -831,7 +869,7 @@ public class Main {
             break;
         }
 
-
+        System.out.print("\033[H\033[2J");
         if (M.rowEff > 0 && M.colEff > 0)
         {
             spl.CramerSPL(M);
@@ -887,15 +925,18 @@ public class Main {
         double detResult;
         BigDecimal roundDet = new BigDecimal(0);
 
-        // double det;
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
-        
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
+
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try 
@@ -975,7 +1016,7 @@ public class Main {
             case 3:
             break;
         }
-
+        System.out.println();
         if (M.rowEff > 0 && M.colEff > 0)
         {
             if (M.rowEff != M.colEff)
@@ -987,16 +1028,18 @@ public class Main {
                 detResult = det.determinantOBE(M);
                 roundDet = new BigDecimal(detResult).setScale(10, RoundingMode.HALF_UP);
                 roundDet = roundDet.stripTrailingZeros();
-                System.out.print("\nDeterminannya adalah: ");
+                System.out.print("Determinannya adalah: ");
                 System.out.println(roundDet.toPlainString());
             }
-
+            
+            System.out.println();
             System.out.println("Simpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
+
             do
             {
-                System.out.print(">>");
+                System.out.print(">> ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
@@ -1041,15 +1084,18 @@ public class Main {
         double detResult;
         BigDecimal roundDet = new BigDecimal(0);
 
-        // double det;
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
-        
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
+
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try 
@@ -1129,7 +1175,7 @@ public class Main {
             case 3:
             break;
         }
-
+        System.out.println();
         if (M.rowEff > 0 && M.colEff > 0)
         {
             if (M.rowEff != M.colEff)
@@ -1141,16 +1187,18 @@ public class Main {
                 detResult = det.determinantCofactor(M);
                 roundDet = new BigDecimal(detResult).setScale(10, RoundingMode.HALF_UP);
                 roundDet = roundDet.stripTrailingZeros();
-                System.out.print("\nDeterminannya adalah: ");
+                System.out.print("Determinannya adalah: ");
                 System.out.println(roundDet.toPlainString());
             }
-
+    
+            System.out.println();
             System.out.println("Simpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
+
             do
             {
-                System.out.print(">>");
+                System.out.print(">> ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
@@ -1192,14 +1240,19 @@ public class Main {
         String[] row;
         Matrix M = new Matrix();
         int dimensi, input = 0;
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
-        
+
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
+
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try 
@@ -1278,13 +1331,15 @@ public class Main {
                 System.out.print("\nBalikannya adalah: \n");
                 inverse.writeMatrix();
             }
-        
+            
+            System.out.println();
             System.out.println("Simpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
+
             do
             {
-                System.out.print(">>");
+                System.out.print(">> ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
@@ -1324,14 +1379,19 @@ public class Main {
         String[] row;
         Matrix M = new Matrix();
         int dimensi, input = 0;
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
-        
+
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
+
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try 
@@ -1411,12 +1471,13 @@ public class Main {
                 inverse.writeMatrix();
             }
         
+            System.out.println();
             System.out.println("Simpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
             do
             {
-                System.out.print(">>");
+                System.out.print(">> ");
                 line = in.nextLine();
                 row = line.split(" ");
                 try 
@@ -1454,19 +1515,21 @@ public class Main {
     {
         String line;
         String[] row;
-
-        /* Memilih metode input */
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
-
         int input;
         Matrix M = new Matrix();
 
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
+
         do
         {
-            System.out.print(">> ");
+            System.out.print("Pilih metode (1 - 3) >> ");
             line = in.nextLine();
             row = line.split(" ");
             try 
@@ -1528,7 +1591,7 @@ public class Main {
             System.out.println("Nilai f(" + xInterpolasi + ") = " + hasilInterpolasi);
         
             /* Output file */
-            System.out.println("\nApakah ingin dalam bentuk file?");
+            System.out.println("\nSimpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
             do
@@ -1577,14 +1640,18 @@ public class Main {
         String mark;
         String[] baris;
 
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
 
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             mark = in.nextLine();
             baris = mark.split(" ");
             try 
@@ -1637,7 +1704,7 @@ public class Main {
             System.out.println("2. Tidak");
             do
             {
-                System.out.print(">>");
+                System.out.print(">> ");
                 mark = in.nextLine();
                 baris = mark.split(" ");
                 try 
@@ -1682,14 +1749,18 @@ public class Main {
         String mark;
         String[] baris;
 
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
 
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             mark = in.nextLine();
             baris = mark.split(" ");
             try {
@@ -1743,7 +1814,7 @@ public class Main {
             System.out.println("2. Tidak");
             do
             {
-                System.out.print(">>");
+                System.out.print(">> ");
                 mark = in.nextLine();
                 baris = mark.split(" ");
                 try 
@@ -1787,14 +1858,18 @@ public class Main {
         String mark;
         String[] baris;
 
-        System.out.println("\nPilih metode masukan:");
-        System.out.println("1. File");
-        System.out.println("2. Keyboard");
-        System.out.println("\n3. Kembali Ke Menu");
+        System.out.println("========================================");
+        System.out.println("|                Masukan               |");
+        System.out.println("========================================");
+        System.out.println("| 1 | File                             |");
+        System.out.println("| 2 | Keyboard                         |");
+        System.out.println("| 3 | Kembali Ke Menu                  |");
+        System.out.println("========================================");
+        System.out.println();
 
         do
         {
-            System.out.print(">>");
+            System.out.print("Pilih metode (1 - 3) >> ");
             mark = in.nextLine();
             baris = mark.split(" ");
             try 
@@ -1845,14 +1920,13 @@ public class Main {
             /* Output terminal */
             System.out.println("Hasil dari f(" +String.valueOf(a)+","+ String.valueOf(b)+ "): " +String.valueOf(result));
             
-            /* Output file */
             System.out.println("\nSimpan dalam bentuk file?");
             System.out.println("1. Ya");
             System.out.println("2. Tidak");
             
             do
             {
-                System.out.print(">>");
+                System.out.print(">> ");
                 mark = in.nextLine();
                 baris = mark.split(" ");
                 try 
