@@ -313,6 +313,7 @@ public class ImageResizing {
         {
             System.out.println(e);
         }
+        in.close();
     }
     
 }

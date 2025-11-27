@@ -1966,15 +1966,14 @@ public class Main {
         System.out.print("\nNama file (dengan extensionnya. Misal: .jpg) >> ");
 
         String sourceImg = in.nextLine();
-        String imgDirectory = System.getProperty("user.dir") + "/test/img/";
-        File imgFile = new File(imgDirectory + sourceImg);
+        File imgFile = new File("../test/img/" + sourceImg);
 
         while(!imgFile.exists())
         {
             System.out.println("File tidak ditemukan! Silahkan input kembali.");
             System.out.print("Nama file (dengan extensionnya. Misal: .jpg) >> ");
             sourceImg = in.nextLine();
-            imgFile = new File(imgDirectory + sourceImg);
+            imgFile = new File("../test/img/" + sourceImg);
         }
 
         ir.imageProccesing(imgFile);
